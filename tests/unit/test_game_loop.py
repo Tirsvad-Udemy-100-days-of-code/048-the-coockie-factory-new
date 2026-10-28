@@ -7,9 +7,11 @@ from pathlib import Path
 from cookie_clicker_bot.application.game_loop import (
     PlayResult,
     buy_most_expensive_upgrade,
+    buy_upgrades,
     click_and_buy,
     click_cookie,
 )
+from cookie_clicker_bot.domain.buy_strategy import BuyStrategy
 from cookie_clicker_bot.domain.upgrades import Upgrade
 
 CURSOR = Upgrade("product0", "Cursor", 15)
@@ -169,3 +171,80 @@ def test_click_and_buy_stops_at_the_deadline_and_reports_elapsed_time() -> None:
 
     assert result.clicks == 300
     assert result.elapsed_seconds == 300.0
+
+
+def test_buy_upgrades_buy_one_buys_only_the_best_affordable() -> None:
+    game = FakeGame(cookies=120, upgrades=[CURSOR, GRANDMA])
+
+    assert buy_upgrades(game, BuyStrategy.BUY_ONE) == [GRANDMA]
+    assert game.bought == [GRANDMA]
+
+
+def test_buy_upgrades_buy_all_buys_every_affordable_upgrade() -> None:
+    game = FakeGame(cookies=120, upgrades=[CURSOR, GRANDMA])
+
+    assert buy_upgrades(game, BuyStrategy.BUY_ALL) == [GRANDMA, CURSOR]
+    assert game.bought == [GRANDMA, CURSOR]
+
+
+def test_buy_upgrades_buy_all_buys_nothing_when_too_poor() -> None:
+    game = FakeGame(cookies=10, upgrades=[CURSOR, GRANDMA])
+
+    assert buy_upgrades(game, BuyStrategy.BUY_ALL) == []
+    assert game.bought == []
+
+
+def test_buy_upgrades_buy_all_leaves_out_failed_buys() -> None:
+    game = FakeGame(cookies=120, upgrades=[CURSOR, GRANDMA], buy_succeeds=False)
+
+    assert buy_upgrades(game, BuyStrategy.BUY_ALL) == []
+    assert game.bought == [GRANDMA, CURSOR]
+
+
+def test_click_and_buy_defaults_to_buying_one_upgrade() -> None:
+    clock = FakeClock()
+    game = FakeGame(cookies=120, upgrades=[CURSOR, GRANDMA], clock=clock)
+
+    result = click_and_buy(game, 6, 5, clock)
+
+    assert result.purchases == ("Grandma",)
+
+
+def test_click_and_buy_buy_all_records_every_purchase_in_order() -> None:
+    clock = FakeClock()
+    game = FakeGame(cookies=120, upgrades=[CURSOR, GRANDMA], clock=clock)
+
+    result = click_and_buy(game, 6, 5, clock, BuyStrategy.BUY_ALL)
+
+    assert result.purchases == ("Grandma", "Cursor")
+
+
+def test_click_and_buy_buy_all_does_not_record_failed_buys() -> None:
+    clock = FakeClock()
+    game = FakeGame(
+        cookies=120, upgrades=[CURSOR, GRANDMA], clock=clock, buy_succeeds=False
+    )
+
+    result = click_and_buy(game, 6, 5, clock, BuyStrategy.BUY_ALL)
+
+    assert game.bought == [GRANDMA, CURSOR]
+    assert result.purchases == ()
+
+
+def test_click_and_buy_checks_every_second_with_a_one_second_interval() -> None:
+    clock = FakeClock()
+    game = FakeGame(cookies=105, upgrades=[GRANDMA], clock=clock)
+
+    click_and_buy(game, 4, 1, clock)
+
+    assert game.buy_times == [2.0, 3.0, 4.0]
+
+
+def test_click_and_buy_checks_every_ten_seconds_with_a_ten_second_interval() -> None:
+    clock = FakeClock()
+    game = FakeGame(cookies=105, upgrades=[GRANDMA], clock=clock)
+
+    result = click_and_buy(game, 25, 10, clock)
+
+    assert game.buy_times == [11.0, 21.0]
+    assert result.purchases == ("Grandma", "Grandma")

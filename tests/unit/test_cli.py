@@ -154,12 +154,12 @@ def test_main_logs_bought_only_for_real_purchases(
 ) -> None:
     caplog.set_level("INFO")
 
-    main(["--duration", "0.05", "--interval", "0"], lambda _h: RecordingGame())
+    main(["--duration", "0.05", "--interval", "0.001"], lambda _h: RecordingGame())
     assert "bought Cursor" in caplog.text
 
     caplog.clear()
     game = RecordingGame(buy_succeeds=False)
-    main(["--duration", "0.05", "--interval", "0"], lambda _h: game)
+    main(["--duration", "0.05", "--interval", "0.001"], lambda _h: game)
     assert "buy" in game.calls
     assert "bought Cursor" not in caplog.text
     assert "bought 0 upgrades" in caplog.text
@@ -172,3 +172,45 @@ def test_main_prints_nothing_on_stdout_when_the_run_fails(
         main(["--duration", "0"], lambda _headless: RecordingGame(fail_on_open=True))
 
     assert capsys.readouterr().out == ""
+
+
+def test_parse_args_buys_one_upgrade_unless_buy_all_is_given() -> None:
+    assert parse_args([]).buy_all is False
+    assert parse_args(["--buy-all"]).buy_all is True
+
+
+@pytest.mark.parametrize("value", ["0", "-1", "abc", "nan"])
+def test_parse_args_rejects_an_interval_that_is_not_positive(
+    value: str, capsys: pytest.CaptureFixture[str]
+) -> None:
+    with pytest.raises(SystemExit) as exit_info:
+        parse_args(["--interval", value])
+
+    assert exit_info.value.code == 2
+    assert "greater than 0" in capsys.readouterr().err
+
+
+def test_main_logs_the_interval_and_the_strategy(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level("INFO")
+
+    main(["--duration", "0"], lambda _h: RecordingGame())
+    assert "every 5 seconds, strategy buy-one" in caplog.text
+
+    caplog.clear()
+    main(
+        ["--duration", "0", "--interval", "2", "--buy-all"], lambda _h: RecordingGame()
+    )
+    assert "every 2.0 seconds, strategy buy-all" in caplog.text
+
+
+def test_main_buy_all_buys_every_affordable_upgrade_per_check(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level("INFO")
+    game = RecordingGame()
+
+    main(["--duration", "0.05", "--interval", "0.001", "--buy-all"], lambda _h: game)
+
+    assert "bought Cursor" in caplog.text

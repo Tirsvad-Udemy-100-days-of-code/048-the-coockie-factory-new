@@ -15,6 +15,9 @@ RUN_DURATION_SECONDS: Final[int] = 300
 ## Seconds between two checks for an affordable upgrade (lecture step 3).
 UPGRADE_CHECK_INTERVAL_SECONDS: Final[int] = 5
 
+## Error shown when a command-line number must be greater than zero.
+POSITIVE_NUMBER_ERROR_TEMPLATE: Final[str] = "{value!r} is not a number greater than 0"
+
 ## Longest time to wait for an element of the page, in seconds.
 WAIT_TIMEOUT_SECONDS: Final[int] = 20
 
@@ -71,6 +74,9 @@ MAGNITUDE_MULTIPLIERS: Final[dict[str, int]] = {
 
 ## Seconds between two polls while waiting for an element.
 POLL_INTERVAL_SECONDS: Final[float] = 0.2
+
+## Total attempts to read a value the game re-rendered under us (stale element).
+STALE_READ_ATTEMPTS: Final[int] = 5
 
 ## Environment variable that names the Chromium binary (set in the Docker image).
 CHROME_BIN_ENV: Final[str] = "CHROME_BIN"

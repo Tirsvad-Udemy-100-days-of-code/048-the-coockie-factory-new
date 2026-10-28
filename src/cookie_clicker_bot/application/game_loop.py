@@ -7,7 +7,12 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from cookie_clicker_bot.application.ports import GamePort
-from cookie_clicker_bot.domain.upgrades import Upgrade, choose_most_expensive_affordable
+from cookie_clicker_bot.domain.buy_strategy import BuyStrategy
+from cookie_clicker_bot.domain.upgrades import (
+    Upgrade,
+    choose_affordable_upgrades,
+    choose_most_expensive_affordable,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,11 +48,27 @@ def buy_most_expensive_upgrade(game: GamePort) -> Upgrade | None:
     return None
 
 
+def buy_upgrades(game: GamePort, strategy: BuyStrategy) -> list[Upgrade]:
+    """@brief Do one purchase round with the given strategy (lecture step 5).
+
+    @param game The game to play.
+    @param strategy BUY_ONE buys the most expensive affordable upgrade, BUY_ALL buys
+        every upgrade the cookies pay for.
+    @return The upgrades really bought, in order; a click that missed is left out.
+    """
+    if strategy is BuyStrategy.BUY_ONE:
+        bought = buy_most_expensive_upgrade(game)
+        return [] if bought is None else [bought]
+    plan = choose_affordable_upgrades(game.upgrades(), game.cookie_count())
+    return [upgrade for upgrade in plan if game.buy(upgrade)]
+
+
 def click_and_buy(
     game: GamePort,
     duration_seconds: float,
     check_interval_seconds: float,
     clock: Callable[[], float] = time.monotonic,
+    strategy: BuyStrategy = BuyStrategy.BUY_ONE,
 ) -> PlayResult:
     """@brief Click the cookie nonstop and check the upgrades at every interval.
 
@@ -56,6 +77,7 @@ def click_and_buy(
     @param check_interval_seconds Time between two upgrade checks; the first check
         comes one interval after the start.
     @param clock Monotonic clock in seconds; a test passes a fake one.
+    @param strategy What to buy at each check.
     @return The clicks, the names of the upgrades bought in order, and the time spent.
     """
     start = clock()
@@ -68,9 +90,7 @@ def click_and_buy(
         clicks += 1
         if now >= next_check:
             next_check = now + check_interval_seconds
-            bought = buy_most_expensive_upgrade(game)
-            if bought is not None:
-                purchases.append(bought.name)
+            purchases.extend(upgrade.name for upgrade in buy_upgrades(game, strategy))
     return PlayResult(
         clicks=clicks, purchases=tuple(purchases), elapsed_seconds=clock() - start
     )

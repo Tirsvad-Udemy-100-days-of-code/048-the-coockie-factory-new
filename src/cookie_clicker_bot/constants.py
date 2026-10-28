@@ -90,6 +90,12 @@ WINDOW_SIZE: Final[str] = "1366,900"
 ## Script that clicks an element from inside the page, past anything that covers it.
 JS_CLICK_SCRIPT: Final[str] = "arguments[0].click();"
 
+## Script that reads the cookies per second of one unit of each product, by index.
+JS_PRODUCTION_SCRIPT: Final[str] = "return Game.ObjectsById.map(o => o.storedCps);"
+
+## Prefix of a product element id; the rest is the index into the script's list.
+PRODUCT_ID_PREFIX: Final[str] = "product"
+
 ## Chromium arguments needed to run headless inside a container.
 HEADLESS_BROWSER_ARGUMENTS: Final[tuple[str, ...]] = (
     "--headless=new",

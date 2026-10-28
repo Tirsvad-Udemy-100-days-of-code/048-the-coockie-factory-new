@@ -16,6 +16,8 @@ class Upgrade:
     name: str
     ## Price in cookies.
     price: int
+    ## Cookies per second one unit makes; None when the page did not tell.
+    cookies_per_second: float | None = None
 
 
 def choose_affordable_upgrades(
@@ -37,6 +39,33 @@ def choose_affordable_upgrades(
             plan.append(upgrade)
             remaining -= upgrade.price
     return plan
+
+
+def choose_best_value(upgrades: Sequence[Upgrade], cookies: int) -> Upgrade | None:
+    """@brief Pick the affordable upgrade that pays for itself fastest.
+
+    The value of an upgrade is its price divided by the cookies per second it makes,
+    so the lowest ratio wins. Upgrades with unknown or zero production are skipped;
+    when none of the affordable ones has a known production the rule falls back to
+    the most expensive affordable upgrade.
+
+    @param upgrades The visible upgrades, in store order.
+    @param cookies The cookies the player has.
+    @return The chosen upgrade (the first on a tie), or None when none is affordable.
+    """
+    producing = [
+        upgrade
+        for upgrade in upgrades
+        if upgrade.price <= cookies
+        and upgrade.cookies_per_second is not None
+        and upgrade.cookies_per_second > 0
+    ]
+    if not producing:
+        return choose_most_expensive_affordable(upgrades, cookies)
+    return min(
+        producing,
+        key=lambda upgrade: upgrade.price / (upgrade.cookies_per_second or 1.0),
+    )
 
 
 def choose_most_expensive_affordable(

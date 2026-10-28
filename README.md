@@ -102,6 +102,7 @@ The bot plays for 5 minutes, then prints one line on standard output, for exampl
 | `--duration SECONDS` | How long to play | 300 |
 | `--interval SECONDS` | Time between upgrade checks (greater than 0) | 5 |
 | `--buy-all` | Buy every affordable upgrade, most expensive first, instead of one | off |
+| `--best-value` | Buy the affordable upgrade with the lowest price per cookie per second (not together with `--buy-all`) | off |
 | `--headless` | Run Chromium without a window | off (on in Docker) |
 | `--screenshot PATH` | Save a screenshot when the run ends | none |
 | `--screenshot-start PATH` | Save a screenshot before the first click | none |

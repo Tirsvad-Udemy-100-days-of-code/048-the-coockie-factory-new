@@ -9,6 +9,7 @@ from typing import Any
 import pytest
 from selenium.common.exceptions import (
     ElementClickInterceptedException,
+    JavascriptException,
     NoSuchElementException,
     StaleElementReferenceException,
 )
@@ -63,8 +64,13 @@ class FakeDriver:
         self.screenshots: list[str] = []
         self.quit_called = False
         self.scripts: list[tuple[str, FakeElement]] = []
+        self.production: Any = []
 
-    def execute_script(self, script: str, *args: Any) -> None:  # noqa: ANN401
+    def execute_script(self, script: str, *args: Any) -> Any:  # noqa: ANN401
+        if script == constants.JS_PRODUCTION_SCRIPT:
+            if isinstance(self.production, Exception):
+                raise self.production
+            return self.production
         self.scripts.append((script, args[0]))
 
     def get(self, url: str) -> None:
@@ -427,3 +433,58 @@ def test_close_quits_the_driver() -> None:
     make_game(driver).close()
 
     assert driver.quit_called
+
+
+def _driver_with_two_products() -> FakeDriver:
+    driver = FakeDriver()
+    driver.groups[constants.VISIBLE_PRODUCT_SELECTOR] = [
+        make_product("product0", "Cursor", "15"),
+        make_product("product1", "Grandma", "100"),
+    ]
+    return driver
+
+
+def test_upgrades_reads_the_production_of_each_product() -> None:
+    driver = _driver_with_two_products()
+    driver.production = [0.1, 1]
+
+    assert make_game(driver).upgrades() == [
+        Upgrade("product0", "Cursor", 15, 0.1),
+        Upgrade("product1", "Grandma", 100, 1.0),
+    ]
+
+
+def test_upgrades_leaves_the_production_unknown_when_the_script_fails() -> None:
+    driver = _driver_with_two_products()
+    driver.production = JavascriptException("Game is not defined")
+
+    upgrades = make_game(driver).upgrades()
+
+    assert [upgrade.cookies_per_second for upgrade in upgrades] == [None, None]
+
+
+def test_upgrades_leaves_the_production_unknown_for_a_product_the_list_lacks() -> None:
+    driver = _driver_with_two_products()
+    driver.production = [0.1]
+
+    upgrades = make_game(driver).upgrades()
+
+    assert [upgrade.cookies_per_second for upgrade in upgrades] == [0.1, None]
+
+
+def test_upgrades_leaves_a_production_that_is_not_a_number_unknown() -> None:
+    driver = _driver_with_two_products()
+    driver.production = [{}, 1]
+
+    upgrades = make_game(driver).upgrades()
+
+    assert [upgrade.cookies_per_second for upgrade in upgrades] == [None, 1.0]
+
+
+def test_upgrades_leaves_the_production_unknown_for_an_unexpected_answer() -> None:
+    driver = _driver_with_two_products()
+    driver.production = None
+
+    upgrades = make_game(driver).upgrades()
+
+    assert [upgrade.cookies_per_second for upgrade in upgrades] == [None, None]

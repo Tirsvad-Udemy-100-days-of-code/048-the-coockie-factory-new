@@ -69,12 +69,21 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         default=constants.UPGRADE_CHECK_INTERVAL_SECONDS,
         help="seconds between upgrade checks, greater than 0 (default: %(default)s)",
     )
-    parser.add_argument(
+    choice = parser.add_mutually_exclusive_group()
+    choice.add_argument(
         "--buy-all",
         action="store_true",
         help=(
             "at each check buy every affordable upgrade, most expensive first "
             "(default: buy only the most expensive affordable one)"
+        ),
+    )
+    choice.add_argument(
+        "--best-value",
+        action="store_true",
+        help=(
+            "at each check buy the affordable upgrade with the lowest price per "
+            "cookie per second"
         ),
     )
     parser.add_argument(
@@ -95,6 +104,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def choose_strategy(args: argparse.Namespace) -> BuyStrategy:
+    """@brief Turn the purchase options into a strategy.
+
+    @param args The parsed options.
+    @return BUY_ALL, BEST_VALUE or, by default, BUY_ONE.
+    """
+    if args.buy_all:
+        return BuyStrategy.BUY_ALL
+    if args.best_value:
+        return BuyStrategy.BEST_VALUE
+    return BuyStrategy.BUY_ONE
+
+
 def main(
     argv: Sequence[str] | None = None,
     game_factory: Callable[[bool], GamePort] = create_game,
@@ -113,7 +135,7 @@ def main(
         game.dismiss_language()
         if args.screenshot_start is not None:
             game.save_screenshot(args.screenshot_start)
-        strategy = BuyStrategy.BUY_ALL if args.buy_all else BuyStrategy.BUY_ONE
+        strategy = choose_strategy(args)
         logger.info(
             "checking upgrades every %s seconds, strategy %s",
             args.interval,

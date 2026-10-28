@@ -179,6 +179,31 @@ def test_parse_args_buys_one_upgrade_unless_buy_all_is_given() -> None:
     assert parse_args(["--buy-all"]).buy_all is True
 
 
+def test_parse_args_best_value_is_off_by_default() -> None:
+    assert parse_args([]).best_value is False
+    assert parse_args(["--best-value"]).best_value is True
+
+
+def test_parse_args_rejects_buy_all_together_with_best_value(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit) as exit_info:
+        parse_args(["--buy-all", "--best-value"])
+
+    assert exit_info.value.code == 2
+    assert "not allowed with" in capsys.readouterr().err
+
+
+def test_main_logs_the_best_value_strategy(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level("INFO")
+
+    main(["--duration", "0", "--best-value"], lambda _h: RecordingGame())
+
+    assert "strategy best-value" in caplog.text
+
+
 @pytest.mark.parametrize("value", ["0", "-1", "abc", "nan"])
 def test_parse_args_rejects_an_interval_that_is_not_positive(
     value: str, capsys: pytest.CaptureFixture[str]

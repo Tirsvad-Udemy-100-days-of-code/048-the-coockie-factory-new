@@ -11,6 +11,7 @@ from cookie_clicker_bot.domain.buy_strategy import BuyStrategy
 from cookie_clicker_bot.domain.upgrades import (
     Upgrade,
     choose_affordable_upgrades,
+    choose_best_value,
     choose_most_expensive_affordable,
 )
 
@@ -48,16 +49,35 @@ def buy_most_expensive_upgrade(game: GamePort) -> Upgrade | None:
     return None
 
 
+def buy_best_value_upgrade(game: GamePort) -> Upgrade | None:
+    """@brief Buy the affordable upgrade with the lowest price per cookie per second.
+
+    @param game The game to play.
+    @return The upgrade that was bought, or None when nothing was affordable or
+        the click did not reach the product.
+    """
+    chosen = choose_best_value(game.upgrades(), game.cookie_count())
+    if chosen is not None and game.buy(chosen):
+        return chosen
+    return None
+
+
 def buy_upgrades(game: GamePort, strategy: BuyStrategy) -> list[Upgrade]:
     """@brief Do one purchase round with the given strategy (lecture step 5).
 
     @param game The game to play.
     @param strategy BUY_ONE buys the most expensive affordable upgrade, BUY_ALL buys
-        every upgrade the cookies pay for.
+        every upgrade the cookies pay for, BEST_VALUE buys the one with the lowest
+        price per cookie per second.
     @return The upgrades really bought, in order; a click that missed is left out.
     """
-    if strategy is BuyStrategy.BUY_ONE:
-        bought = buy_most_expensive_upgrade(game)
+    if strategy is not BuyStrategy.BUY_ALL:
+        buy_one = (
+            buy_best_value_upgrade
+            if strategy is BuyStrategy.BEST_VALUE
+            else buy_most_expensive_upgrade
+        )
+        bought = buy_one(game)
         return [] if bought is None else [bought]
     plan = choose_affordable_upgrades(game.upgrades(), game.cookie_count())
     return [upgrade for upgrade in plan if game.buy(upgrade)]

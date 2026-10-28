@@ -1,0 +1,53 @@
+# ADR-0003 Browser runs and screenshots in a Docker container
+
+## Metadata
+| Key | Value |
+| --- | --- |
+| ID | ADR-0003 |
+| CrossReference | [BC-001], [MIL-002], [MIL-003] |
+
+## Version History
+| Date | Status | Author | Reviewer | Change | Commit |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version | [cadc5ef] |
+
+Allowed Status values: `Proposed`, `Accepted`, `Rejected`, `Deprecated`, `Superseded by ADR-NNNN`.
+
+---
+
+## Context
+
+The bot drives a real browser and every lecture step needs a screenshot. The framework forbids testing a GUI on the host desktop because it takes the user's mouse and keyboard (`framework/process/gui-testing.md`). Options:
+
+1. Run Chrome on the host desktop.
+2. Run headless Chromium in a Docker container (Linux).
+3. Run in Windows Sandbox.
+
+## Decision
+
+Option 2. A Dockerfile builds an image with Python, Chromium and its driver; a helper script runs the bot or a screenshot job in it. The bot takes a headless option so the same code runs on the host for users who want it.
+
+## Consequences
+
+**Positive:**
+
+- No interference with the user's desktop; reproducible runs for S02.
+- Screenshots are made the same way each time.
+
+**Negative:**
+
+- Docker is needed for the real-browser runs and screenshots (unit tests need no Docker).
+- The image download is large.
+
+## Affected Artifacts
+
+- [BC-001] — risk of non-reproducible runs
+- [MIL-002] — builds the image
+- [MIL-003] — first container run
+
+---
+
+[BC-001]: ../business-case.md
+[MIL-002]: ../milestones/mil-002-scaffold.md
+[MIL-003]: ../milestones/mil-003-click-bot.md
+[cadc5ef]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/cadc5eff21d9afc09799d4bc2e3f6ac17ab2612a

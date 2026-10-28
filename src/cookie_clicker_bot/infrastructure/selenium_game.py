@@ -151,13 +151,17 @@ class SeleniumGame:
         )
         return [self._read_upgrade(product) for product in products]
 
-    @staticmethod
-    def _read_again_if_stale(read: Callable[[], T]) -> T:
-        """@brief Run a read; repeat it once when the page re-rendered under it."""
-        try:
-            return read()
-        except StaleElementReferenceException:
-            return read()
+    def _read_again_if_stale(self, read: Callable[[], T]) -> T:
+        """@brief Run a read; repeat it while the page re-renders under it.
+
+        @throws StaleElementReferenceException When every attempt went stale.
+        """
+        for _ in range(constants.STALE_READ_ATTEMPTS - 1):
+            try:
+                return read()
+            except StaleElementReferenceException:
+                self._sleep(constants.POLL_INTERVAL_SECONDS)
+        return read()
 
     def buy(self, upgrade: Upgrade) -> bool:
         """@brief Buy an upgrade by clicking its product.

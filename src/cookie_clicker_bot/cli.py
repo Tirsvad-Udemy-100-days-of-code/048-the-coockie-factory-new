@@ -11,6 +11,7 @@ from cookie_clicker_bot import constants
 from cookie_clicker_bot.application.game_loop import click_and_buy
 from cookie_clicker_bot.application.ports import GamePort
 from cookie_clicker_bot.application.report import format_result
+from cookie_clicker_bot.domain.buy_strategy import BuyStrategy
 from cookie_clicker_bot.infrastructure.browser import create_driver
 from cookie_clicker_bot.infrastructure.selenium_game import SeleniumGame
 
@@ -24,6 +25,23 @@ def create_game(headless: bool) -> GamePort:
     @return The game, ready to open.
     """
     return SeleniumGame(create_driver(headless))
+
+
+def positive_float(text: str) -> float:
+    """@brief Read a number greater than zero from the command line.
+
+    @param text The argument text.
+    @return The number.
+    @throws argparse.ArgumentTypeError When the text is not a number above zero.
+    """
+    message = constants.POSITIVE_NUMBER_ERROR_TEMPLATE.format(value=text)
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(message) from None
+    if not value > 0:
+        raise argparse.ArgumentTypeError(message)
+    return value
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -47,9 +65,17 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--interval",
-        type=float,
+        type=positive_float,
         default=constants.UPGRADE_CHECK_INTERVAL_SECONDS,
-        help="seconds between upgrade checks (default: %(default)s)",
+        help="seconds between upgrade checks, greater than 0 (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--buy-all",
+        action="store_true",
+        help=(
+            "at each check buy every affordable upgrade, most expensive first "
+            "(default: buy only the most expensive affordable one)"
+        ),
     )
     parser.add_argument(
         "--headless",
@@ -87,7 +113,13 @@ def main(
         game.dismiss_language()
         if args.screenshot_start is not None:
             game.save_screenshot(args.screenshot_start)
-        result = click_and_buy(game, args.duration, args.interval)
+        strategy = BuyStrategy.BUY_ALL if args.buy_all else BuyStrategy.BUY_ONE
+        logger.info(
+            "checking upgrades every %s seconds, strategy %s",
+            args.interval,
+            strategy.value,
+        )
+        result = click_and_buy(game, args.duration, args.interval, strategy=strategy)
         for name in result.purchases:
             logger.info("bought %s", name)
         logger.info(

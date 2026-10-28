@@ -317,16 +317,49 @@ def test_upgrades_retries_once_when_a_product_goes_stale() -> None:
     assert make_game(driver).upgrades() == [Upgrade("product0", "Cursor", 15)]
 
 
+def test_cookies_per_second_succeeds_after_four_stale_attempts() -> None:
+    driver = FakeDriver()
+    attempts = _stale_for(4, FakeElement(text="per second: 3.5"))
+    driver.find_element = attempts.find_element  # type: ignore[method-assign]
+    fake_time = FakeTime()
+
+    assert make_game(driver, fake_time).cookies_per_second() == 3.5
+    assert attempts.calls == 5
+    assert fake_time.sleeps == [constants.POLL_INTERVAL_SECONDS] * 4
+
+
 def test_cookie_count_gives_up_when_the_counter_stays_stale() -> None:
     driver = FakeDriver()
-    driver.find_element = _always_stale  # type: ignore[method-assign]
+    attempts = _stale_for(100, FakeElement(text="42 cookies"))
+    driver.find_element = attempts.find_element  # type: ignore[method-assign]
+    fake_time = FakeTime()
 
     with pytest.raises(StaleElementReferenceException):
-        make_game(driver).cookie_count()
+        make_game(driver, fake_time).cookie_count()
+
+    assert attempts.calls == constants.STALE_READ_ATTEMPTS
+    assert fake_time.sleeps == [constants.POLL_INTERVAL_SECONDS] * (
+        constants.STALE_READ_ATTEMPTS - 1
+    )
 
 
-def _always_stale(by: str, value: str) -> FakeElement:
-    raise StaleElementReferenceException
+class _StaleFor:
+    """A `find_element` that goes stale for the first `stale` calls."""
+
+    def __init__(self, stale: int, element: FakeElement) -> None:
+        self._stale = stale
+        self._element = element
+        self.calls = 0
+
+    def find_element(self, by: str, value: str) -> FakeElement:
+        self.calls += 1
+        if self.calls <= self._stale:
+            raise StaleElementReferenceException
+        return self._element
+
+
+def _stale_for(stale: int, element: FakeElement) -> _StaleFor:
+    return _StaleFor(stale, element)
 
 
 def _stale_once_then(

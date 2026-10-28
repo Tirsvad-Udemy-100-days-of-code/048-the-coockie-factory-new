@@ -12,7 +12,7 @@
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
 | 2026-10-28 | Accepted | Jens Tirsvad Nielsen | S01 | Initial version: seven gateways; accepted by S01 in chat | [cadc5ef] |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | S01 | Add MIL-008 (smarter purchase rule); accepted by S01 in chat | pending |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | S01 | Add MIL-008 (smarter purchase rule); accepted by S01 in chat | [9a6796f] |
 
 ---
 
@@ -114,3 +114,5 @@ A No-Go on a gateway stops all later gateways until it is fixed and re-reviewed.
 [Milestone 5]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/294
 [Milestone 6]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/295
 [Milestone 7]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/296
+[Milestone 8]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/308
+[9a6796f]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/9a6796f775680effe37a54f2609c3915140c8c0e

@@ -11,7 +11,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version | pending |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version | [9a6796f] |
 
 ---
 
@@ -73,3 +73,4 @@ A "best value" strategy next to buy-one and buy-all (the lowest price per cookie
 [BC-001]: ../business-case.md
 [PP-001]: ../project-plan.md
 [SA-001]: ../stakeholder-analysis.md
+[9a6796f]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/9a6796f775680effe37a54f2609c3915140c8c0e

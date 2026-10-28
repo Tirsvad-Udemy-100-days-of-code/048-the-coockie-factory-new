@@ -33,8 +33,9 @@ For at holde dit skrivebord frit kan du køre den i Docker (headless Chromium): 
 | --- | --- |
 | Lektionens trin 4: tjek hvert 5. sekund, køb én (alene på computeren) | 18.9 |
 | Lektionens trin 5: tjek hvert 10. sekund, køb én (bedste i sammenligningen) | 18.2 |
+| Reglen bedste værdi, tjek hvert 5. sekund (alene på computeren, to kørsler) | 17.9 og 18.8 |
 
-Rækkerne stammer fra forskellige forhold; [Step 5](Step-5-Improve-the-Strategy-da) forklarer, hvordan de blev målt.
+Reglen bedste værdi (`cookie-clicker-bot --best-value`) køber den opgradering, der er råd til, med den laveste pris pr. cookie pr. sekund. Den var ikke bedre end opgavens regel (18 og 18.8 under de samme forhold). Rækkerne stammer fra forskellige forhold; [Step 5](Step-5-Improve-the-Strategy-da) forklarer, hvordan de blev målt.
 
 ## Sådan er koden organiseret
 

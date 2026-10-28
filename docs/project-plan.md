@@ -11,14 +11,14 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | S01 | Initial version: seven gateways; accepted by S01 in chat | [cadc5ef] |
 | 2026-10-28 | Accepted | Jens Tirsvad Nielsen | S01 | Add MIL-008 (smarter purchase rule); accepted by S01 in chat | [9a6796f] |
+| 2026-10-29 | Accepted | Jens Tirsvad Nielsen | S01 | Add MIL-009 (Home pages show the best value result); accepted by S01 in chat | [72faffa] |
 
 ---
 
 ## Purpose
 
-This plan schedules eight gateways (`MIL-001` to `MIL-008`) that take the Cookie Clicker bot from an accepted baseline to a documented, tested and published repository. The Business Case sets no deadline, so the window 2026-10-28 to 2026-11-04 is a planning assumption of this plan. Each gateway ends in a decision and a deliverable and is delivered by one pull request on its own branch.
+This plan schedules nine gateways (`MIL-001` to `MIL-009`) that take the Cookie Clicker bot from an accepted baseline to a documented, tested and published repository. The Business Case sets no deadline, so the window 2026-10-28 to 2026-11-04 is a planning assumption of this plan. Each gateway ends in a decision and a deliverable and is delivered by one pull request on its own branch.
 
 ## Planning Assumptions
 
@@ -40,6 +40,7 @@ This plan schedules eight gateways (`MIL-001` to `MIL-008`) that take the Cookie
 | Lecture step 5 | [MIL-006] | 2026-11-01 to 2026-11-02 | 2026-11-02 | S01 | none (technical tasks) | Strategy options, comparison, screenshot 5 | [Milestone 6] |
 | Documentation, wiki and release | [MIL-007] | 2026-11-02 to 2026-11-04 | 2026-11-04 | S01 | none (documentation) | README, Doxygen, wiki in en, da and ms, final checks | [Milestone 7] |
 | Smarter purchase rule | [MIL-008] | 2026-11-05 to 2026-11-06 | 2026-11-06 | S01 | none (technical tasks) | Best value strategy, measured comparison, wiki note in en, da and ms | [Milestone 8] |
+| Home pages show the best value result | [MIL-009] | 2026-10-29 to 2026-10-30 | 2026-10-30 | S01 | none (documentation) | Results row and --best-value note on the wiki Home pages in en, da and ms | [Milestone 9] |
 
 ```plantuml
 @startgantt
@@ -106,6 +107,7 @@ A No-Go on a gateway stops all later gateways until it is fixed and re-reviewed.
 [MIL-006]: ./milestones/mil-006-strategy.md
 [MIL-007]: ./milestones/mil-007-documentation.md
 [MIL-008]: ./milestones/mil-008-smarter-rule.md
+[MIL-009]: ./milestones/mil-009-home-results.md
 [cadc5ef]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/cadc5eff21d9afc09799d4bc2e3f6ac17ab2612a
 [Milestone 1]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/290
 [Milestone 2]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/291
@@ -115,4 +117,6 @@ A No-Go on a gateway stops all later gateways until it is fixed and re-reviewed.
 [Milestone 6]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/295
 [Milestone 7]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/296
 [Milestone 8]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/308
+[Milestone 9]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/309
 [9a6796f]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/9a6796f775680effe37a54f2609c3915140c8c0e
+[72faffa]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/72faffaff9e46bb294c7d55555a179af8d842443

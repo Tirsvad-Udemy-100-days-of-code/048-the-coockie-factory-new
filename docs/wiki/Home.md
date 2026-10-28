@@ -33,8 +33,9 @@ To keep your desktop free, run it in Docker (headless Chromium): `docker build -
 | --- | --- |
 | Lecture step 4: check every 5 seconds, buy one (alone on the computer) | 18.9 |
 | Lecture step 5: check every 10 seconds, buy one (best of the comparison) | 18.2 |
+| Best value rule, check every 5 seconds (alone on the computer, two runs) | 17.9 and 18.8 |
 
-The rows come from different conditions; [Step 5](Step-5-Improve-the-Strategy) explains how they were measured.
+The best value rule (`cookie-clicker-bot --best-value`) buys the affordable upgrade with the lowest price per cookie per second. It was not better than the assignment's rule (18 and 18.8 in the same conditions). The rows come from different conditions; [Step 5](Step-5-Improve-the-Strategy) explains how they were measured.
 
 ## How the code is organised
 

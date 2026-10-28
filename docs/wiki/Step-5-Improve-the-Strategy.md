@@ -36,9 +36,29 @@ The best result is the 10 second interval with buy one. Why:
 - Checking more often is not better. Every check reads the page and takes time away from clicking, and the most expensive affordable product is usually only a little better than the cheaper one you could have bought a moment before.
 - Buy all makes no difference early in the game: only Cursor and Grandma are affordable, and the bot buys them anyway. It would matter later, when the cookie count holds several products at once.
 
+## A smarter rule: best value
+
+`--best-value` does not look at the price alone. The game tells how many cookies per second one unit of each product makes, and the bot buys the affordable product with the lowest price per cookie per second (`choose_best_value`). Cursor costs 15 and makes 0.1 (150 cookies for each cookie per second), Grandma costs 100 and makes 1 (100 for each), so Grandma is the better deal even though it costs more.
+
+```bash
+cookie-clicker-bot --best-value
+```
+
+Each row is a full 300 second run alone in a Docker container, one after the other, check every 5 seconds:
+
+| Run | Strategy | cookies/second | Bought |
+| --- | --- | --- | --- |
+| 1 | most expensive affordable | 18 | 30 Cursor, 15 Grandma |
+| 2 | best value | 17.9 | 29 Cursor, 15 Grandma |
+| 3 | most expensive affordable | 18.8 | 28 Cursor, 16 Grandma |
+| 4 | best value | 18.8 | 28 Cursor, 16 Grandma |
+
+The smarter rule is **not better**: the two rules differ by less than the difference between two runs of the same rule (18 and 18.8). The reason is the same as for buy all. In 5 seconds the bot clicks about 125 cookies, so only Cursor and Grandma are ever affordable, and both rules buy nearly the same. A rule that looks at value would matter once several products are affordable at once, for example with a longer check interval or after the first minutes of luck.
+
 ## What we gained in this step
 
 - **Small, pure rules are easy to compare.** Because the choice of upgrade does not touch Selenium, a new strategy is a new function plus a test.
 - **Measure, do not guess.** The result we expected (more checks, more cookies) was the opposite of what the runs showed.
 - **A second real bug.** The first batch crashed in one container: the game rewrites the counter every frame, and a computer under load made our single retry fail. The read now retries five times with a short pause. A test with a fake driver that goes stale four times shows it.
 - **Fair comparisons need the same conditions.** We ran the rows at the same time and report two batches, because one run can be lucky.
+- **A better idea still has to be measured.** The best value rule is correct on paper and made no difference in the runs, because the bot never has enough cookies to choose between more than two products.

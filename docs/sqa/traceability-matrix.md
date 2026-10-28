@@ -9,8 +9,8 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: baseline artifacts | [cadc5ef] |
 | 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add MIL-008 and RC-019 | [9a6796f] |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add RC-020, the code review of MIL-008 | pending |
 
 ---
 
@@ -48,6 +48,7 @@ Tracks backward and forward links between artifact instances so that the Busines
 | Source and tests of [MIL-004] | Python source code | - | - | [MIL-004], [ADR-0002] | - | RC-016 |
 | Source and tests of [MIL-005] | Python source code | - | - | [MIL-005], [ADR-0002] | - | RC-017 |
 | Source and tests of [MIL-006] | Python source code | - | - | [MIL-006], [ADR-0002] | - | RC-018 |
+| Source and tests of [MIL-008] | Python source code | - | - | [MIL-008], [ADR-0002] | - | RC-020 |
 
 ## Concern Coverage
 

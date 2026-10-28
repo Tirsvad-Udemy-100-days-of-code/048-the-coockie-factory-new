@@ -30,6 +30,12 @@ BIG_COOKIE_ID: Final[str] = "bigCookie"
 ## Id of the element that shows the cookie count and the cookies per second.
 COOKIE_COUNT_ID: Final[str] = "cookies"
 
+## Id of the element that shows only the cookies per second (child of `#cookies`).
+COOKIES_PER_SECOND_ID: Final[str] = "cookiesPerSecond"
+
+## The one line the program prints on stdout when the run ends.
+RESULT_MESSAGE_TEMPLATE: Final[str] = "cookies/second: {cookies_per_second:.12g}"
+
 ## CSS selector of the products in the right-hand pane that the player can see.
 VISIBLE_PRODUCT_SELECTOR: Final[str] = ".product.unlocked"
 
@@ -73,7 +79,10 @@ CHROME_BIN_ENV: Final[str] = "CHROME_BIN"
 CHROMEDRIVER_PATH_ENV: Final[str] = "CHROMEDRIVER_PATH"
 
 ## Size of the browser window in pixels, so the screenshots look the same every time.
-WINDOW_SIZE: Final[str] = "1366,768"
+WINDOW_SIZE: Final[str] = "1366,900"
+
+## Script that clicks an element from inside the page, past anything that covers it.
+JS_CLICK_SCRIPT: Final[str] = "arguments[0].click();"
 
 ## Chromium arguments needed to run headless inside a container.
 HEADLESS_BROWSER_ARGUMENTS: Final[tuple[str, ...]] = (

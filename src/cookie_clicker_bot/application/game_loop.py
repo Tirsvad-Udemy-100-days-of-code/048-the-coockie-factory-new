@@ -18,6 +18,8 @@ class PlayResult:
     clicks: int
     ## Names of the upgrades bought, in the order they were bought.
     purchases: tuple[str, ...]
+    ## Seconds the run lasted, measured with the clock given to `click_and_buy`.
+    elapsed_seconds: float
 
 
 def click_cookie(game: GamePort) -> None:
@@ -32,12 +34,13 @@ def buy_most_expensive_upgrade(game: GamePort) -> Upgrade | None:
     """@brief Buy the most expensive upgrade the player can afford (lecture step 3).
 
     @param game The game to play.
-    @return The upgrade that was bought, or None when nothing was affordable.
+    @return The upgrade that was bought, or None when nothing was affordable or
+        the click did not reach the product.
     """
     chosen = choose_most_expensive_affordable(game.upgrades(), game.cookie_count())
-    if chosen is not None:
-        game.buy(chosen)
-    return chosen
+    if chosen is not None and game.buy(chosen):
+        return chosen
+    return None
 
 
 def click_and_buy(
@@ -53,7 +56,7 @@ def click_and_buy(
     @param check_interval_seconds Time between two upgrade checks; the first check
         comes one interval after the start.
     @param clock Monotonic clock in seconds; a test passes a fake one.
-    @return The number of clicks and the names of the upgrades bought, in order.
+    @return The clicks, the names of the upgrades bought in order, and the time spent.
     """
     start = clock()
     deadline = start + duration_seconds
@@ -68,4 +71,6 @@ def click_and_buy(
             bought = buy_most_expensive_upgrade(game)
             if bought is not None:
                 purchases.append(bought.name)
-    return PlayResult(clicks=clicks, purchases=tuple(purchases))
+    return PlayResult(
+        clicks=clicks, purchases=tuple(purchases), elapsed_seconds=clock() - start
+    )

@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cookie-clicker-bot"
+version = "0.1.0"
+description = "Selenium bot that plays Cookie Clicker (Udemy 100 Days of Code, day 48)."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { file = "LICENSE" }
+dependencies = [
+    "selenium>=4.25",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+    "mypy>=1.13",
+]
+
+[project.scripts]
+cookie-clicker-bot = "cookie_clicker_bot.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+pythonpath = ["src"]
+markers = [
+    "browser: needs a real browser (run in the Docker container)",
+]
+
+[tool.coverage.run]
+source = ["cookie_clicker_bot"]
+omit = ["*/infrastructure/*", "*/cli.py", "*/__main__.py"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+src = ["src", "tests"]
+extend-exclude = ["framework", ".claude", ".agents"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "D", "ANN", "S", "PT"]
+ignore = ["D203", "D213", "D205", "D212", "D400", "D415", "D401"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "D"]
+
+[tool.mypy]
+strict = true
+python_version = "3.13"
+files = ["src", "tests"]

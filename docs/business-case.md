@@ -11,7 +11,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: Cookie Clicker bot (Udemy day 48) | pending |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: Cookie Clicker bot (Udemy day 48) | [cadc5ef] |
 
 ---
 
@@ -150,3 +150,4 @@ Proceed: the scope is small, the risks have mitigations, and the narrowest first
 ---
 
 [SA-001]: ./stakeholder-analysis.md
+[cadc5ef]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/cadc5eff21d9afc09799d4bc2e3f6ac17ab2612a

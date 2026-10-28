@@ -9,7 +9,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: baseline artifacts | pending |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: baseline artifacts | [cadc5ef] |
 
 ---
 
@@ -84,3 +84,4 @@ Tracks backward and forward links between artifact instances so that the Busines
 [MIL-005]: ../milestones/mil-005-timed-run.md
 [MIL-006]: ../milestones/mil-006-strategy.md
 [MIL-007]: ../milestones/mil-007-documentation.md
+[cadc5ef]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/cadc5eff21d9afc09799d4bc2e3f6ac17ab2612a

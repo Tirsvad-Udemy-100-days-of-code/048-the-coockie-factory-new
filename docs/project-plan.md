@@ -11,7 +11,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | S01 | Initial version: seven gateways; accepted by S01 in chat | pending |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | S01 | Initial version: seven gateways; accepted by S01 in chat | [cadc5ef] |
 
 ---
 
@@ -105,3 +105,4 @@ A No-Go on a gateway stops all later gateways until it is fixed and re-reviewed.
 [MIL-005]: ./milestones/mil-005-timed-run.md
 [MIL-006]: ./milestones/mil-006-strategy.md
 [MIL-007]: ./milestones/mil-007-documentation.md
+[cadc5ef]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/cadc5eff21d9afc09799d4bc2e3f6ac17ab2612a

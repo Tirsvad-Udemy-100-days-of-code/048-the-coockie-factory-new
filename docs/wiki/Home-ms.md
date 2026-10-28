@@ -33,8 +33,9 @@ Untuk memastikan desktop anda bebas, jalankannya dalam Docker (Chromium tanpa ke
 | --- | --- |
 | Langkah kuliah 4: semak setiap 5 saat, beli satu (bersendirian pada komputer) | 18.9 |
 | Langkah kuliah 5: semak setiap 10 saat, beli satu (terbaik dalam perbandingan) | 18.2 |
+| Peraturan nilai terbaik, semak setiap 5 saat (bersendirian pada komputer, dua larian) | 17.9 dan 18.8 |
 
-Baris-baris ini datang daripada keadaan yang berbeza; [Langkah 5](Step-5-Improve-the-Strategy-ms) menerangkan cara ia diukur.
+Peraturan nilai terbaik (`cookie-clicker-bot --best-value`) membeli naik taraf yang mampu dibeli dengan harga terendah bagi setiap kuki sesaat. Ia tidak lebih baik daripada peraturan tugasan (18 dan 18.8 dalam keadaan yang sama). Baris-baris ini datang daripada keadaan yang berbeza; [Langkah 5](Step-5-Improve-the-Strategy-ms) menerangkan cara ia diukur.
 
 ## Cara kod disusun
 

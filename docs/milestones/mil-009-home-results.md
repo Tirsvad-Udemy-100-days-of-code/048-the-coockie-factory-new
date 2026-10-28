@@ -11,7 +11,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-29 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version | pending |
+| 2026-10-29 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version | [72faffa] |
 
 ---
 
@@ -67,3 +67,4 @@ A new row in the Results table of the wiki Home page in English, Danish and Baha
 [MIL-008]: ./mil-008-smarter-rule.md
 [PP-001]: ../project-plan.md
 [SA-001]: ../stakeholder-analysis.md
+[72faffa]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/72faffaff9e46bb294c7d55555a179af8d842443

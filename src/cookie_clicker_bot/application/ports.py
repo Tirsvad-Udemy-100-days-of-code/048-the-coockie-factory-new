@@ -5,6 +5,8 @@
 from pathlib import Path
 from typing import Protocol
 
+from cookie_clicker_bot.domain.upgrades import Upgrade
+
 
 class GamePort(Protocol):
     """@brief What the bot needs from the game, whatever drives the browser."""
@@ -17,6 +19,26 @@ class GamePort(Protocol):
 
     def click_cookie(self) -> None:
         """@brief Click the big cookie once."""
+
+    def cookie_count(self) -> int:
+        """@brief Read how many cookies the player has.
+
+        @return The cookie count.
+        """
+        ...
+
+    def upgrades(self) -> list[Upgrade]:
+        """@brief Read the upgrades the player can see in the right-hand pane.
+
+        @return The visible upgrades, affordable or not, in store order.
+        """
+        ...
+
+    def buy(self, upgrade: Upgrade) -> None:
+        """@brief Buy an upgrade by clicking it.
+
+        @param upgrade The upgrade to buy.
+        """
 
     def save_screenshot(self, path: Path) -> None:
         """@brief Write a screenshot of the game to a PNG file.

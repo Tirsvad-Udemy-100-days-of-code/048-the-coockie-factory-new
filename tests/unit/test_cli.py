@@ -9,6 +9,7 @@ import pytest
 from cookie_clicker_bot import constants
 from cookie_clicker_bot.application.ports import GamePort
 from cookie_clicker_bot.cli import main, parse_args
+from cookie_clicker_bot.domain.upgrades import Upgrade
 
 
 class RecordingGame:
@@ -31,6 +32,15 @@ class RecordingGame:
     def click_cookie(self) -> None:
         self.calls.append("click_cookie")
 
+    def cookie_count(self) -> int:
+        return 0
+
+    def upgrades(self) -> list[Upgrade]:
+        return []
+
+    def buy(self, upgrade: Upgrade) -> None:
+        self.calls.append("buy")
+
     def save_screenshot(self, path: Path) -> None:
         self.calls.append("save_screenshot")
         self.screenshots.append(path)
@@ -43,6 +53,7 @@ def test_parse_args_uses_defaults() -> None:
     args = parse_args([])
 
     assert args.duration == constants.RUN_DURATION_SECONDS == 300
+    assert args.interval == constants.UPGRADE_CHECK_INTERVAL_SECONDS == 5
     assert args.headless is False
     assert args.screenshot_start is None
     assert args.screenshot is None
@@ -54,6 +65,8 @@ def test_parse_args_reads_every_option() -> None:
             "--headless",
             "--duration",
             "10",
+            "--interval",
+            "2.5",
             "--screenshot-start",
             "a.png",
             "--screenshot",
@@ -63,6 +76,7 @@ def test_parse_args_reads_every_option() -> None:
 
     assert args.headless is True
     assert args.duration == 10
+    assert args.interval == 2.5
     assert args.screenshot_start == Path("a.png")
     assert args.screenshot == Path("b.png")
 

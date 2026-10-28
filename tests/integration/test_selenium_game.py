@@ -13,6 +13,7 @@ from selenium.common.exceptions import (
 )
 
 from cookie_clicker_bot import constants
+from cookie_clicker_bot.domain.upgrades import Upgrade
 from cookie_clicker_bot.infrastructure.selenium_game import SeleniumGame
 
 
@@ -23,11 +24,24 @@ class FakeElement:
         self,
         displayed: Callable[[], bool] = lambda: True,
         click_error: Exception | None = None,
+        text: str = "",
+        attributes: dict[str, str] | None = None,
+        children: dict[str, "FakeElement"] | None = None,
     ) -> None:
-        self.text = ""
+        self.text = text
         self.clicks = 0
         self._displayed = displayed
         self._click_error = click_error
+        self._attributes = attributes or {}
+        self._children = children or {}
+
+    def get_attribute(self, name: str) -> str | None:
+        return self._attributes.get(name)
+
+    def find_element(self, by: str, value: str) -> "FakeElement":
+        if by != "css selector" or value not in self._children:
+            raise NoSuchElementException(value)
+        return self._children[value]
 
     def click(self) -> None:
         if self._click_error is not None:
@@ -43,6 +57,7 @@ class FakeDriver:
 
     def __init__(self, elements: dict[str, FakeElement] | None = None) -> None:
         self.elements = elements or {}
+        self.groups: dict[str, list[FakeElement]] = {}
         self.loaded: list[str] = []
         self.screenshots: list[str] = []
         self.quit_called = False
@@ -54,6 +69,11 @@ class FakeDriver:
         if by != "id" or value not in self.elements:
             raise NoSuchElementException(value)
         return self.elements[value]
+
+    def find_elements(self, by: str, value: str) -> list[FakeElement]:
+        if by != "css selector":
+            return []
+        return self.groups.get(value, [])
 
     def save_screenshot(self, filename: str) -> bool:
         self.screenshots.append(filename)
@@ -155,6 +175,63 @@ def test_click_cookie_ignores_a_covered_or_stale_cookie(error: Exception) -> Non
     driver = FakeDriver({constants.BIG_COOKIE_ID: FakeElement(click_error=error)})
 
     make_game(driver).click_cookie()
+
+
+def make_product(key: str, name: str, price: str) -> FakeElement:
+    return FakeElement(
+        attributes={"id": key},
+        children={
+            constants.PRODUCT_NAME_SELECTOR: FakeElement(text=name),
+            constants.PRODUCT_PRICE_SELECTOR: FakeElement(text=price),
+        },
+    )
+
+
+def test_cookie_count_reads_the_cookie_counter() -> None:
+    driver = FakeDriver(
+        {
+            constants.COOKIE_COUNT_ID: FakeElement(
+                text="1.235\nmillion cookies\nper second: 0"
+            )
+        }
+    )
+
+    assert make_game(driver).cookie_count() == 1_235_000
+
+
+def test_upgrades_reads_the_visible_products() -> None:
+    driver = FakeDriver()
+    driver.groups[constants.VISIBLE_PRODUCT_SELECTOR] = [
+        make_product("product0", "Cursor", "15"),
+        make_product("product2", "Farm", "1,100"),
+    ]
+
+    assert make_game(driver).upgrades() == [
+        Upgrade("product0", "Cursor", 15),
+        Upgrade("product2", "Farm", 1100),
+    ]
+
+
+def test_upgrades_is_empty_when_no_product_is_visible() -> None:
+    assert make_game(FakeDriver()).upgrades() == []
+
+
+def test_buy_clicks_the_product_with_the_upgrade_key() -> None:
+    driver = FakeDriver({"product1": FakeElement()})
+
+    make_game(driver).buy(Upgrade("product1", "Grandma", 100))
+
+    assert driver.elements["product1"].clicks == 1
+
+
+@pytest.mark.parametrize(
+    "error",
+    [ElementClickInterceptedException(), StaleElementReferenceException()],
+)
+def test_buy_ignores_a_covered_or_stale_product(error: Exception) -> None:
+    driver = FakeDriver({"product1": FakeElement(click_error=error)})
+
+    make_game(driver).buy(Upgrade("product1", "Grandma", 100))
 
 
 def test_save_screenshot_creates_the_folder_and_calls_the_driver(

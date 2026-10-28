@@ -23,6 +23,18 @@ The bot follows the five steps of the lecture:
 4. After 5 minutes stop and print `cookies/second`.
 5. Tweak the strategy (check interval, buy one or buy all affordable).
 
+### The five steps in pictures
+
+| Step | Screenshot |
+| --- | --- |
+| 1. Get to know the game | ![Step 1: the game after the language was chosen](docs/images/step-1.png) |
+| 2. Click the cookie | ![Step 2: after 15 seconds of clicking](docs/images/step-2.png) |
+| 3. Buy the most expensive affordable upgrade | ![Step 3: after 45 seconds of clicking and buying](docs/images/step-3.png) |
+| 4. Stop after 5 minutes, print cookies/second | ![Step 4: after the 5 minute run, 18.9 per second](docs/images/step-4.png) |
+| 5. Tweak the strategy | ![Step 5: the best run, checking every 10 seconds](docs/images/step-5.png) |
+
+What each step taught is explained in the [wiki][documentation], in English, Danish and Bahasa Malaysia (the same pages are in `docs/wiki/`).
+
 The repository is organised like this:
 
 | Folder or file | What it is for |
@@ -83,11 +95,23 @@ or, without installing the command:
 python -m cookie_clicker_bot
 ```
 
-To keep your desktop free, run it in the Docker container (headless Chromium):
+The bot plays for 5 minutes, then prints one line on standard output, for example `cookies/second: 18.9`. What it did (clicks, purchases, time) is logged on standard error. Options:
+
+| Option | What it does | Default |
+| --- | --- | --- |
+| `--duration SECONDS` | How long to play | 300 |
+| `--interval SECONDS` | Time between upgrade checks (greater than 0) | 5 |
+| `--buy-all` | Buy every affordable upgrade, most expensive first, instead of one | off |
+| `--headless` | Run Chromium without a window | off (on in Docker) |
+| `--screenshot PATH` | Save a screenshot when the run ends | none |
+| `--screenshot-start PATH` | Save a screenshot before the first click | none |
+
+To keep your desktop free, run it in the Docker container (headless Chromium). Options go after the image name:
 
 ```bash
 docker build -t cookie-clicker-bot .
 docker run --rm cookie-clicker-bot
+docker run --rm cookie-clicker-bot --headless --interval 10
 ```
 
 ## 🧪 Tests

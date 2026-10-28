@@ -51,15 +51,15 @@ Tracks backward and forward links between artifact instances so that the Busines
 
 | Concern (CN-ID) | Views that answer it | Decisions (ADR) | Quality check (TP) | Status |
 | --- | --- | --- | --- | --- |
-| CN-001 | [BC-001], [MIL-003], [MIL-004], [MIL-005] | [ADR-0002] | Unit tests per gateway | Planned |
+| CN-001 | [BC-001], [MIL-003], [MIL-004], [MIL-005] | [ADR-0002] | Unit tests per gateway | Covered |
 | CN-002 | [PP-001], [MIL-001] | [ADR-0001] | Review records | Covered |
-| CN-003 | [MIL-006] | - | Unit tests per gateway | Planned |
-| CN-004 | [MIL-002], [MIL-003] | [ADR-0002] | Code review | Planned |
-| CN-005 | [MIL-002], [MIL-007] | - | Clean clone walk-through | Planned |
-| CN-006 | [MIL-007] | - | Wiki check | Planned |
-| CN-007 | [MIL-001], [MIL-007] | - | Repository API check | Planned |
-| CN-008 | [MIL-002] | [ADR-0002] | pyproject check | Planned |
-| CN-009 | [MIL-001] | - | Review of .gitignore and history | Planned |
+| CN-003 | [MIL-006] | - | Unit tests per gateway | Covered |
+| CN-004 | [MIL-002], [MIL-003] | [ADR-0002] | Code review | Covered |
+| CN-005 | [MIL-002], [MIL-007] | - | Clean clone walk-through | Covered |
+| CN-006 | [MIL-007] | - | Wiki check | Covered |
+| CN-007 | [MIL-001], [MIL-007] | - | Repository API check | Covered |
+| CN-008 | [MIL-002] | [ADR-0002] | pyproject check | Covered |
+| CN-009 | [MIL-001] | - | Review of .gitignore and history | Covered |
 
 ## Open Inconsistencies
 
@@ -71,7 +71,7 @@ Tracks backward and forward links between artifact instances so that the Busines
 
 - No test plan (`TP`), architecture description (`AD`) or design artifacts exist: ADR-0001 skips stories and use cases, and the code is small. Quality checks in Concern Coverage name the check used instead.
 - `-` in Upstream means foundational, in Downstream that nothing is built on it yet, and in Last Reviewed that no `RC-*` exists.
-- Status `Planned` means a milestone will answer the concern; it is not a gap.
+- Every concern is covered once MIL-007 is merged; the quality check column names the check that was run.
 
 ---
 

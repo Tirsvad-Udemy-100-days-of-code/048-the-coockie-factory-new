@@ -4,6 +4,7 @@
 
 from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import pytest
 from selenium.common.exceptions import (
@@ -61,6 +62,10 @@ class FakeDriver:
         self.loaded: list[str] = []
         self.screenshots: list[str] = []
         self.quit_called = False
+        self.scripts: list[tuple[str, FakeElement]] = []
+
+    def execute_script(self, script: str, *args: Any) -> None:  # noqa: ANN401
+        self.scripts.append((script, args[0]))
 
     def get(self, url: str) -> None:
         self.loaded.append(url)
@@ -143,6 +148,55 @@ def test_dismiss_language_polls_until_the_button_is_visible() -> None:
     assert fake_time.sleeps == [constants.POLL_INTERVAL_SECONDS] * 2
 
 
+def stale_once() -> Callable[[], bool]:
+    """Return an `is_displayed` that goes stale on the first call only."""
+    calls: list[int] = []
+
+    def displayed() -> bool:
+        calls.append(1)
+        if len(calls) == 1:
+            raise StaleElementReferenceException
+        return True
+
+    return displayed
+
+
+def test_dismiss_language_survives_a_cookie_that_goes_stale_once() -> None:
+    driver = ready_driver()
+    driver.elements[constants.BIG_COOKIE_ID] = FakeElement(displayed=stale_once())
+
+    make_game(driver).dismiss_language()
+
+    assert driver.elements[constants.LANGUAGE_ENGLISH_ID].clicks == 1
+
+
+def test_dismiss_language_survives_a_button_that_goes_stale_once() -> None:
+    driver = ready_driver()
+    driver.elements[constants.LANGUAGE_ENGLISH_ID] = FakeElement(displayed=stale_once())
+
+    make_game(driver).dismiss_language()
+
+    assert driver.elements[constants.LANGUAGE_ENGLISH_ID].clicks == 1
+
+
+def test_dismiss_language_survives_a_lookup_that_goes_stale_once() -> None:
+    driver = ready_driver()
+    real_find = driver.find_element
+    calls: list[int] = []
+
+    def find_element(by: str, value: str) -> FakeElement:
+        calls.append(1)
+        if len(calls) == 1:
+            raise StaleElementReferenceException
+        return real_find(by, value)
+
+    driver.find_element = find_element  # type: ignore[method-assign]
+
+    make_game(driver).dismiss_language()
+
+    assert driver.elements[constants.LANGUAGE_ENGLISH_ID].clicks == 1
+
+
 def test_dismiss_language_times_out_when_the_button_never_shows() -> None:
     fake_time = FakeTime()
 
@@ -199,6 +253,14 @@ def test_cookie_count_reads_the_cookie_counter() -> None:
     assert make_game(driver).cookie_count() == 1_235_000
 
 
+def test_cookies_per_second_reads_its_element() -> None:
+    driver = FakeDriver(
+        {constants.COOKIES_PER_SECOND_ID: FakeElement(text="per second: 1,234.5")}
+    )
+
+    assert make_game(driver).cookies_per_second() == 1234.5
+
+
 def test_upgrades_reads_the_visible_products() -> None:
     driver = FakeDriver()
     driver.groups[constants.VISIBLE_PRODUCT_SELECTOR] = [
@@ -212,6 +274,75 @@ def test_upgrades_reads_the_visible_products() -> None:
     ]
 
 
+class StaleOnceText(FakeElement):
+    """An element whose text goes stale on the first read."""
+
+    def __init__(self, text: str) -> None:
+        super().__init__()
+        self._text = text
+        self._reads = 0
+
+    @property
+    def text(self) -> str:
+        self._reads += 1
+        if self._reads == 1:
+            raise StaleElementReferenceException
+        return self._text
+
+    @text.setter
+    def text(self, value: str) -> None:
+        self._text = value
+
+
+def test_cookie_count_retries_once_when_the_counter_goes_stale() -> None:
+    driver = FakeDriver({constants.COOKIE_COUNT_ID: StaleOnceText("42 cookies")})
+
+    assert make_game(driver).cookie_count() == 42
+
+
+def test_cookies_per_second_retries_once_when_the_element_goes_stale() -> None:
+    driver = FakeDriver(
+        {constants.COOKIES_PER_SECOND_ID: StaleOnceText("per second: 3.5")}
+    )
+
+    assert make_game(driver).cookies_per_second() == 3.5
+
+
+def test_upgrades_retries_once_when_a_product_goes_stale() -> None:
+    product = make_product("product0", "Cursor", "15")
+    product.get_attribute = _stale_once_then(product.get_attribute)  # type: ignore[assignment]
+    driver = FakeDriver()
+    driver.groups[constants.VISIBLE_PRODUCT_SELECTOR] = [product]
+
+    assert make_game(driver).upgrades() == [Upgrade("product0", "Cursor", 15)]
+
+
+def test_cookie_count_gives_up_when_the_counter_stays_stale() -> None:
+    driver = FakeDriver()
+    driver.find_element = _always_stale  # type: ignore[method-assign]
+
+    with pytest.raises(StaleElementReferenceException):
+        make_game(driver).cookie_count()
+
+
+def _always_stale(by: str, value: str) -> FakeElement:
+    raise StaleElementReferenceException
+
+
+def _stale_once_then(
+    original: Callable[[str], str | None],
+) -> Callable[[str], str | None]:
+    calls: list[int] = []
+
+    def get_attribute(name: str) -> str | None:
+        calls.append(1)
+        if len(calls) == 1:
+            raise StaleElementReferenceException
+        return original(name)
+
+    return get_attribute
+
+
 def test_upgrades_is_empty_when_no_product_is_visible() -> None:
     assert make_game(FakeDriver()).upgrades() == []
 
@@ -219,19 +350,30 @@ def test_upgrades_is_empty_when_no_product_is_visible() -> None:
 def test_buy_clicks_the_product_with_the_upgrade_key() -> None:
     driver = FakeDriver({"product1": FakeElement()})
 
-    make_game(driver).buy(Upgrade("product1", "Grandma", 100))
+    bought = make_game(driver).buy(Upgrade("product1", "Grandma", 100))
 
+    assert bought is True
     assert driver.elements["product1"].clicks == 1
+    assert driver.scripts == []
 
 
-@pytest.mark.parametrize(
-    "error",
-    [ElementClickInterceptedException(), StaleElementReferenceException()],
-)
-def test_buy_ignores_a_covered_or_stale_product(error: Exception) -> None:
-    driver = FakeDriver({"product1": FakeElement(click_error=error)})
+def test_buy_clicks_through_javascript_when_a_banner_covers_the_product() -> None:
+    element = FakeElement(click_error=ElementClickInterceptedException())
+    driver = FakeDriver({"product1": element})
 
-    make_game(driver).buy(Upgrade("product1", "Grandma", 100))
+    bought = make_game(driver).buy(Upgrade("product1", "Grandma", 100))
+
+    assert bought is True
+    assert driver.scripts == [(constants.JS_CLICK_SCRIPT, element)]
+
+
+def test_buy_returns_false_for_a_stale_product() -> None:
+    driver = FakeDriver(
+        {"product1": FakeElement(click_error=StaleElementReferenceException())}
+    )
+
+    assert make_game(driver).buy(Upgrade("product1", "Grandma", 100)) is False
+    assert driver.scripts == []
 
 
 def test_save_screenshot_creates_the_folder_and_calls_the_driver(

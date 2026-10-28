@@ -15,7 +15,8 @@ from cookie_clicker_bot.domain.upgrades import Upgrade
 class RecordingGame:
     """A game that records every call in order."""
 
-    def __init__(self, fail_on_open: bool = False) -> None:
+    def __init__(self, fail_on_open: bool = False, buy_succeeds: bool = True) -> None:
+        self._buy_succeeds = buy_succeeds
         self.calls: list[str] = []
         self.screenshots: list[Path] = []
         self._fail_on_open = fail_on_open
@@ -33,13 +34,17 @@ class RecordingGame:
         self.calls.append("click_cookie")
 
     def cookie_count(self) -> int:
-        return 0
+        return 1000
+
+    def cookies_per_second(self) -> float:
+        return 8.5
 
     def upgrades(self) -> list[Upgrade]:
-        return []
+        return [Upgrade("product0", "Cursor", 15)]
 
-    def buy(self, upgrade: Upgrade) -> None:
+    def buy(self, upgrade: Upgrade) -> bool:
         self.calls.append("buy")
+        return self._buy_succeeds
 
     def save_screenshot(self, path: Path) -> None:
         self.calls.append("save_screenshot")
@@ -129,3 +134,41 @@ def test_main_closes_the_game_when_an_error_is_raised() -> None:
         main(["--duration", "0"], lambda _headless: game)
 
     assert game.calls == ["open_game", "close"]
+
+
+def test_main_prints_exactly_one_result_line_on_stdout(
+    capsys: pytest.CaptureFixture[str], caplog: pytest.LogCaptureFixture
+) -> None:
+    caplog.set_level("INFO")
+
+    main(["--duration", "0"], lambda _headless: RecordingGame())
+
+    out = capsys.readouterr().out
+    assert out == "cookies/second: 8.5" + chr(10)
+    assert "clicked the cookie" not in out
+    assert "clicked the cookie" in caplog.text
+
+
+def test_main_logs_bought_only_for_real_purchases(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level("INFO")
+
+    main(["--duration", "0.05", "--interval", "0"], lambda _h: RecordingGame())
+    assert "bought Cursor" in caplog.text
+
+    caplog.clear()
+    game = RecordingGame(buy_succeeds=False)
+    main(["--duration", "0.05", "--interval", "0"], lambda _h: game)
+    assert "buy" in game.calls
+    assert "bought Cursor" not in caplog.text
+    assert "bought 0 upgrades" in caplog.text
+
+
+def test_main_prints_nothing_on_stdout_when_the_run_fails(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(RuntimeError, match="boom"):
+        main(["--duration", "0"], lambda _headless: RecordingGame(fail_on_open=True))
+
+    assert capsys.readouterr().out == ""

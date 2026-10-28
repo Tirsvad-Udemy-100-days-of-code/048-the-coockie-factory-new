@@ -5,7 +5,7 @@
 import time
 from collections.abc import Callable, Sequence
 from pathlib import Path
-from typing import Protocol, TypeVar
+from typing import Any, Protocol, TypeVar
 
 from selenium.common.exceptions import (
     ElementClickInterceptedException,
@@ -15,7 +15,11 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 
 from cookie_clicker_bot import constants
-from cookie_clicker_bot.domain.parsing import parse_amount, parse_cookie_count
+from cookie_clicker_bot.domain.parsing import (
+    parse_amount,
+    parse_cookie_count,
+    parse_cookies_per_second,
+)
 from cookie_clicker_bot.domain.upgrades import Upgrade
 
 T = TypeVar("T")
@@ -61,6 +65,10 @@ class DriverLike(Protocol):
 
     def save_screenshot(self, filename: str) -> bool:
         """@brief Write a PNG screenshot."""
+        ...
+
+    def execute_script(self, script: str, *args: Any) -> Any:  # noqa: ANN401
+        """@brief Run JavaScript in the page; the arguments are `arguments[n]`."""
         ...
 
     def quit(self) -> None:
@@ -112,29 +120,63 @@ class SeleniumGame:
 
         @return The cookie count.
         """
-        element = self._driver.find_element(By.ID, constants.COOKIE_COUNT_ID)
-        return parse_cookie_count(element.text)
+        return self._read_again_if_stale(
+            lambda: parse_cookie_count(
+                self._driver.find_element(By.ID, constants.COOKIE_COUNT_ID).text
+            )
+        )
+
+    def cookies_per_second(self) -> float:
+        """@brief Read how many cookies the player makes each second.
+
+        @return The cookies per second.
+        """
+        return self._read_again_if_stale(
+            lambda: parse_cookies_per_second(
+                self._driver.find_element(By.ID, constants.COOKIES_PER_SECOND_ID).text
+            )
+        )
 
     def upgrades(self) -> list[Upgrade]:
         """@brief Read the upgrades the player can see in the right-hand pane.
 
         @return The visible upgrades, affordable or not, in store order.
         """
+        return self._read_again_if_stale(self._read_upgrades)
+
+    def _read_upgrades(self) -> list[Upgrade]:
+        """@brief Find the visible products and read each one."""
         products = self._driver.find_elements(
             By.CSS_SELECTOR, constants.VISIBLE_PRODUCT_SELECTOR
         )
         return [self._read_upgrade(product) for product in products]
 
-    def buy(self, upgrade: Upgrade) -> None:
+    @staticmethod
+    def _read_again_if_stale(read: Callable[[], T]) -> T:
+        """@brief Run a read; repeat it once when the page re-rendered under it."""
+        try:
+            return read()
+        except StaleElementReferenceException:
+            return read()
+
+    def buy(self, upgrade: Upgrade) -> bool:
         """@brief Buy an upgrade by clicking its product.
 
         @param upgrade The upgrade to buy.
+        @return True only when a click really reached the product.
         """
         try:
-            self._driver.find_element(By.ID, upgrade.key).click()
-        except (ElementClickInterceptedException, StaleElementReferenceException):
-            # The pane re-rendered or is covered for a moment; the next check retries.
-            return
+            element = self._driver.find_element(By.ID, upgrade.key)
+            try:
+                element.click()
+            except ElementClickInterceptedException:
+                # The cookie-consent banner covers the lower products. Click from
+                # inside the page instead; the banner itself is never clicked.
+                self._driver.execute_script(constants.JS_CLICK_SCRIPT, element)
+        except StaleElementReferenceException:
+            # The pane re-rendered under us; the next check retries.
+            return False
+        return True
 
     def save_screenshot(self, path: Path) -> None:
         """@brief Write a screenshot of the game to a PNG file.
@@ -160,9 +202,10 @@ class SeleniumGame:
         """@brief Return the element with this id when it exists and is displayed."""
         try:
             element = self._driver.find_element(By.ID, element_id)
-        except NoSuchElementException:
+            return element if element.is_displayed() else None
+        except (NoSuchElementException, StaleElementReferenceException):
+            # Not there yet, or the page re-rendered under us: poll again.
             return None
-        return element if element.is_displayed() else None
 
     def _wait_for(self, locate: Callable[[], T | None]) -> T:
         """@brief Poll until `locate` returns a value.

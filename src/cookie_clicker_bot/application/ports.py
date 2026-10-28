@@ -27,6 +27,13 @@ class GamePort(Protocol):
         """
         ...
 
+    def cookies_per_second(self) -> float:
+        """@brief Read how many cookies the player makes each second.
+
+        @return The cookies per second.
+        """
+        ...
+
     def upgrades(self) -> list[Upgrade]:
         """@brief Read the upgrades the player can see in the right-hand pane.
 
@@ -34,11 +41,13 @@ class GamePort(Protocol):
         """
         ...
 
-    def buy(self, upgrade: Upgrade) -> None:
+    def buy(self, upgrade: Upgrade) -> bool:
         """@brief Buy an upgrade by clicking it.
 
         @param upgrade The upgrade to buy.
+        @return True only when a click really reached the product.
         """
+        ...
 
     def save_screenshot(self, path: Path) -> None:
         """@brief Write a screenshot of the game to a PNG file.

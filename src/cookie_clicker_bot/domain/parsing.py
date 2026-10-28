@@ -15,21 +15,18 @@ def parse_amount(text: str) -> int:
     @return The amount as a whole number.
     @throws ValueError When the text is not an amount.
     """
-    words = text.strip().lower().replace(",", "").split()
-    if not 1 <= len(words) <= 2:
-        raise ValueError(_message(text))
-    multiplier = 1
-    if len(words) == 2:
-        multiplier = constants.MAGNITUDE_MULTIPLIERS.get(words[1], 0)
-        if multiplier == 0:
-            raise ValueError(_message(text))
-    try:
-        number = Decimal(words[0])
-    except InvalidOperation:
-        raise ValueError(_message(text)) from None
-    if not number.is_finite() or number < 0:
-        raise ValueError(_message(text))
-    return int(number * multiplier)
+    return int(_read_amount(text))
+
+
+def parse_cookies_per_second(text: str) -> float:
+    """@brief Read the text of `#cookiesPerSecond`, such as `per second: 1,234.5`.
+
+    @param text The visible text of the element, with its `per second:` label.
+    @return The cookies per second.
+    @throws ValueError When the text holds no amount.
+    """
+    amount = text.lower().replace(constants.PER_SECOND_MARKER, "", 1).strip()
+    return float(_read_amount(amount.removeprefix(":")))
 
 
 def parse_cookie_count(text: str) -> int:
@@ -46,6 +43,25 @@ def parse_cookie_count(text: str) -> int:
     for word in constants.COOKIE_WORDS:
         count = count.replace(word, "")
     return parse_amount(" ".join(count.split()))
+
+
+def _read_amount(text: str) -> Decimal:
+    """@brief Read an amount with optional commas and magnitude word, exactly."""
+    words = text.strip().lower().replace(",", "").split()
+    if not 1 <= len(words) <= 2:
+        raise ValueError(_message(text))
+    multiplier = 1
+    if len(words) == 2:
+        multiplier = constants.MAGNITUDE_MULTIPLIERS.get(words[1], 0)
+        if multiplier == 0:
+            raise ValueError(_message(text))
+    try:
+        number = Decimal(words[0])
+    except InvalidOperation:
+        raise ValueError(_message(text)) from None
+    if not number.is_finite() or number < 0:
+        raise ValueError(_message(text))
+    return number * multiplier
 
 
 def _message(text: str) -> str:

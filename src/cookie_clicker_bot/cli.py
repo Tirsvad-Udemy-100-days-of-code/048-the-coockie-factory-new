@@ -10,6 +10,7 @@ from pathlib import Path
 from cookie_clicker_bot import constants
 from cookie_clicker_bot.application.game_loop import click_and_buy
 from cookie_clicker_bot.application.ports import GamePort
+from cookie_clicker_bot.application.report import format_result
 from cookie_clicker_bot.infrastructure.browser import create_driver
 from cookie_clicker_bot.infrastructure.selenium_game import SeleniumGame
 
@@ -90,13 +91,17 @@ def main(
         for name in result.purchases:
             logger.info("bought %s", name)
         logger.info(
-            "clicked the cookie %d times and bought %d upgrades in %s seconds",
+            "clicked the cookie %d times and bought %d upgrades in %.1f seconds",
             result.clicks,
             len(result.purchases),
-            args.duration,
+            result.elapsed_seconds,
         )
+        cookies_per_second = game.cookies_per_second()
+        logger.info("%s", format_result(cookies_per_second))
         if args.screenshot is not None:
             game.save_screenshot(args.screenshot)
     finally:
         game.close()
+    # The program's required result: the only line written to stdout (logs use stderr).
+    print(format_result(cookies_per_second))
     return 0

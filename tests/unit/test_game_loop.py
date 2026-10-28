@@ -4,14 +4,43 @@
 
 from pathlib import Path
 
-from cookie_clicker_bot.application.game_loop import click_cookie, click_cookie_for
+from cookie_clicker_bot.application.game_loop import (
+    PlayResult,
+    buy_most_expensive_upgrade,
+    click_and_buy,
+    click_cookie,
+)
+from cookie_clicker_bot.domain.upgrades import Upgrade
+
+CURSOR = Upgrade("product0", "Cursor", 15)
+GRANDMA = Upgrade("product1", "Grandma", 100)
+
+
+class FakeClock:
+    """A clock that only moves when the fake game is clicked."""
+
+    def __init__(self) -> None:
+        self.now = 0.0
+
+    def __call__(self) -> float:
+        return self.now
 
 
 class FakeGame:
-    """A game that only counts clicks."""
+    """A game with a cookie count and upgrades; each click takes one second."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        cookies: int = 0,
+        upgrades: list[Upgrade] | None = None,
+        clock: FakeClock | None = None,
+    ) -> None:
         self.clicks = 0
+        self.cookies = cookies
+        self.available = upgrades or []
+        self.bought: list[Upgrade] = []
+        self.buy_times: list[float] = []
+        self._clock = clock
 
     def open_game(self) -> None:
         pass
@@ -21,24 +50,25 @@ class FakeGame:
 
     def click_cookie(self) -> None:
         self.clicks += 1
+        if self._clock is not None:
+            self._clock.now += 1.0
+
+    def cookie_count(self) -> int:
+        return self.cookies
+
+    def upgrades(self) -> list[Upgrade]:
+        return self.available
+
+    def buy(self, upgrade: Upgrade) -> None:
+        self.bought.append(upgrade)
+        if self._clock is not None:
+            self.buy_times.append(self._clock.now)
 
     def save_screenshot(self, path: Path) -> None:
         pass
 
     def close(self) -> None:
         pass
-
-
-class FakeClock:
-    """A clock that moves forward one second each time it is read."""
-
-    def __init__(self) -> None:
-        self.now = 0.0
-
-    def __call__(self) -> float:
-        value = self.now
-        self.now += 1.0
-        return value
 
 
 def test_click_cookie_delegates_to_the_game() -> None:
@@ -49,18 +79,56 @@ def test_click_cookie_delegates_to_the_game() -> None:
     assert game.clicks == 1
 
 
-def test_click_cookie_for_clicks_until_the_deadline() -> None:
-    game = FakeGame()
+def test_buy_most_expensive_upgrade_buys_the_best_affordable() -> None:
+    game = FakeGame(cookies=105, upgrades=[CURSOR, GRANDMA])
 
-    # Reads: deadline = 0 + 5; the loop reads 1, 2, 3, 4 (clicks) and 5 (stops).
-    clicks = click_cookie_for(game, 5, FakeClock())
+    bought = buy_most_expensive_upgrade(game)
 
-    assert clicks == 4
-    assert game.clicks == 4
+    assert bought == GRANDMA
+    assert game.bought == [GRANDMA]
 
 
-def test_click_cookie_for_does_not_click_when_duration_is_zero() -> None:
-    game = FakeGame()
+def test_buy_most_expensive_upgrade_buys_nothing_when_too_poor() -> None:
+    game = FakeGame(cookies=10, upgrades=[CURSOR, GRANDMA])
 
-    assert click_cookie_for(game, 0, FakeClock()) == 0
-    assert game.clicks == 0
+    assert buy_most_expensive_upgrade(game) is None
+    assert game.bought == []
+
+
+def test_click_and_buy_checks_the_upgrades_every_interval() -> None:
+    clock = FakeClock()
+    game = FakeGame(cookies=105, upgrades=[CURSOR, GRANDMA], clock=clock)
+
+    result = click_and_buy(game, 12, 5, clock)
+
+    assert result == PlayResult(clicks=12, purchases=("Grandma", "Grandma"))
+    # The checks fall in the iterations that start at 5 s and 10 s; each click then
+    # moves the fake clock on by one second.
+    assert game.buy_times == [6.0, 11.0]
+
+
+def test_click_and_buy_does_not_check_before_the_first_interval() -> None:
+    clock = FakeClock()
+    game = FakeGame(cookies=105, upgrades=[GRANDMA], clock=clock)
+
+    result = click_and_buy(game, 4, 5, clock)
+
+    assert result == PlayResult(clicks=4, purchases=())
+    assert game.bought == []
+
+
+def test_click_and_buy_records_only_real_purchases() -> None:
+    clock = FakeClock()
+    game = FakeGame(cookies=10, upgrades=[CURSOR, GRANDMA], clock=clock)
+
+    result = click_and_buy(game, 11, 5, clock)
+
+    assert result.clicks == 11
+    assert result.purchases == ()
+
+
+def test_click_and_buy_does_not_click_when_duration_is_zero() -> None:
+    clock = FakeClock()
+    game = FakeGame(clock=clock)
+
+    assert click_and_buy(game, 0, 5, clock) == PlayResult(clicks=0, purchases=())

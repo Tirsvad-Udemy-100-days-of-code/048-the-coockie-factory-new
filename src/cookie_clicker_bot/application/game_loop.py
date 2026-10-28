@@ -4,8 +4,20 @@
 
 import time
 from collections.abc import Callable
+from dataclasses import dataclass
 
 from cookie_clicker_bot.application.ports import GamePort
+from cookie_clicker_bot.domain.upgrades import Upgrade, choose_most_expensive_affordable
+
+
+@dataclass(frozen=True, slots=True)
+class PlayResult:
+    """@brief What a run did."""
+
+    ## Number of clicks on the big cookie.
+    clicks: int
+    ## Names of the upgrades bought, in the order they were bought.
+    purchases: tuple[str, ...]
 
 
 def click_cookie(game: GamePort) -> None:
@@ -16,21 +28,44 @@ def click_cookie(game: GamePort) -> None:
     game.click_cookie()
 
 
-def click_cookie_for(
-    game: GamePort,
-    duration_seconds: float,
-    clock: Callable[[], float] = time.monotonic,
-) -> int:
-    """@brief Click the cookie as fast as possible until the time is up.
+def buy_most_expensive_upgrade(game: GamePort) -> Upgrade | None:
+    """@brief Buy the most expensive upgrade the player can afford (lecture step 3).
 
     @param game The game to play.
-    @param duration_seconds How long to keep clicking.
-    @param clock Monotonic clock in seconds; a test passes a fake one.
-    @return The number of clicks made.
+    @return The upgrade that was bought, or None when nothing was affordable.
     """
-    deadline = clock() + duration_seconds
+    chosen = choose_most_expensive_affordable(game.upgrades(), game.cookie_count())
+    if chosen is not None:
+        game.buy(chosen)
+    return chosen
+
+
+def click_and_buy(
+    game: GamePort,
+    duration_seconds: float,
+    check_interval_seconds: float,
+    clock: Callable[[], float] = time.monotonic,
+) -> PlayResult:
+    """@brief Click the cookie nonstop and check the upgrades at every interval.
+
+    @param game The game to play.
+    @param duration_seconds How long to play.
+    @param check_interval_seconds Time between two upgrade checks; the first check
+        comes one interval after the start.
+    @param clock Monotonic clock in seconds; a test passes a fake one.
+    @return The number of clicks and the names of the upgrades bought, in order.
+    """
+    start = clock()
+    deadline = start + duration_seconds
+    next_check = start + check_interval_seconds
     clicks = 0
-    while clock() < deadline:
+    purchases: list[str] = []
+    while (now := clock()) < deadline:
         click_cookie(game)
         clicks += 1
-    return clicks
+        if now >= next_check:
+            next_check = now + check_interval_seconds
+            bought = buy_most_expensive_upgrade(game)
+            if bought is not None:
+                purchases.append(bought.name)
+    return PlayResult(clicks=clicks, purchases=tuple(purchases))

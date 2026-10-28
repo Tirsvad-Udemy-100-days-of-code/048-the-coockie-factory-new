@@ -8,7 +8,7 @@ from collections.abc import Callable, Sequence
 from pathlib import Path
 
 from cookie_clicker_bot import constants
-from cookie_clicker_bot.application.game_loop import click_cookie_for
+from cookie_clicker_bot.application.game_loop import click_and_buy
 from cookie_clicker_bot.application.ports import GamePort
 from cookie_clicker_bot.infrastructure.browser import create_driver
 from cookie_clicker_bot.infrastructure.selenium_game import SeleniumGame
@@ -33,13 +33,22 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(
         prog="cookie-clicker-bot",
-        description="Plays Cookie Clicker: clicks the big cookie as fast as it can.",
+        description=(
+            "Plays Cookie Clicker: clicks the big cookie as fast as it can "
+            "and buys upgrades."
+        ),
     )
     parser.add_argument(
         "--duration",
         type=float,
         default=constants.RUN_DURATION_SECONDS,
         help="seconds to play (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--interval",
+        type=float,
+        default=constants.UPGRADE_CHECK_INTERVAL_SECONDS,
+        help="seconds between upgrade checks (default: %(default)s)",
     )
     parser.add_argument(
         "--headless",
@@ -77,8 +86,15 @@ def main(
         game.dismiss_language()
         if args.screenshot_start is not None:
             game.save_screenshot(args.screenshot_start)
-        clicks = click_cookie_for(game, args.duration)
-        logger.info("clicked the cookie %d times in %s seconds", clicks, args.duration)
+        result = click_and_buy(game, args.duration, args.interval)
+        for name in result.purchases:
+            logger.info("bought %s", name)
+        logger.info(
+            "clicked the cookie %d times and bought %d upgrades in %s seconds",
+            result.clicks,
+            len(result.purchases),
+            args.duration,
+        )
         if args.screenshot is not None:
             game.save_screenshot(args.screenshot)
     finally:

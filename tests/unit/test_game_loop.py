@@ -6,6 +6,7 @@ from pathlib import Path
 
 from cookie_clicker_bot.application.game_loop import (
     PlayResult,
+    buy_best_value_upgrade,
     buy_most_expensive_upgrade,
     buy_upgrades,
     click_and_buy,
@@ -13,6 +14,9 @@ from cookie_clicker_bot.application.game_loop import (
 )
 from cookie_clicker_bot.domain.buy_strategy import BuyStrategy
 from cookie_clicker_bot.domain.upgrades import Upgrade
+
+VALUE_CURSOR = Upgrade("product0", "Cursor", 15, 0.1)
+VALUE_GRANDMA = Upgrade("product1", "Grandma", 100, 1.0)
 
 CURSOR = Upgrade("product0", "Cursor", 15)
 GRANDMA = Upgrade("product1", "Grandma", 100)
@@ -248,3 +252,31 @@ def test_click_and_buy_checks_every_ten_seconds_with_a_ten_second_interval() -> 
 
     assert game.buy_times == [11.0, 21.0]
     assert result.purchases == ("Grandma", "Grandma")
+
+
+def test_buy_best_value_upgrade_buys_the_cheapest_per_cookie_per_second() -> None:
+    game = FakeGame(cookies=500, upgrades=[VALUE_CURSOR, VALUE_GRANDMA])
+
+    bought = buy_best_value_upgrade(game)
+
+    assert bought == VALUE_GRANDMA
+    assert game.bought == [VALUE_GRANDMA]
+
+
+def test_buy_best_value_upgrade_buys_nothing_when_too_poor() -> None:
+    game = FakeGame(cookies=10, upgrades=[VALUE_CURSOR, VALUE_GRANDMA])
+
+    assert buy_best_value_upgrade(game) is None
+    assert game.bought == []
+
+
+def test_buy_best_value_upgrade_leaves_out_a_click_that_missed() -> None:
+    game = FakeGame(cookies=500, upgrades=[VALUE_GRANDMA], buy_succeeds=False)
+
+    assert buy_best_value_upgrade(game) is None
+
+
+def test_buy_upgrades_with_best_value_buys_one_upgrade() -> None:
+    game = FakeGame(cookies=500, upgrades=[VALUE_CURSOR, VALUE_GRANDMA])
+
+    assert buy_upgrades(game, BuyStrategy.BEST_VALUE) == [VALUE_GRANDMA]

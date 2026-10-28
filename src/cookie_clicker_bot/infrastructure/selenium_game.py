@@ -9,6 +9,7 @@ from typing import Any, Protocol, TypeVar
 
 from selenium.common.exceptions import (
     ElementClickInterceptedException,
+    JavascriptException,
     NoSuchElementException,
     StaleElementReferenceException,
 )
@@ -149,7 +150,19 @@ class SeleniumGame:
         products = self._driver.find_elements(
             By.CSS_SELECTOR, constants.VISIBLE_PRODUCT_SELECTOR
         )
-        return [self._read_upgrade(product) for product in products]
+        production = self._read_production()
+        return [self._read_upgrade(product, production) for product in products]
+
+    def _read_production(self) -> list[float]:
+        """@brief Read the cookies per second of one unit of every product.
+
+        @return The numbers by product index; empty when the page does not tell.
+        """
+        try:
+            production = self._driver.execute_script(constants.JS_PRODUCTION_SCRIPT)
+        except JavascriptException:
+            return []
+        return production if isinstance(production, list) else []
 
     def _read_again_if_stale(self, read: Callable[[], T]) -> T:
         """@brief Run a read; repeat it while the page re-renders under it.
@@ -195,12 +208,26 @@ class SeleniumGame:
         self._driver.quit()
 
     @staticmethod
-    def _read_upgrade(product: ElementLike) -> Upgrade:
-        """@brief Read the id, name and price of one product element."""
+    def _read_upgrade(product: ElementLike, production: Sequence[float]) -> Upgrade:
+        """@brief Read the id, name, price and production of one product element."""
         name = product.find_element(By.CSS_SELECTOR, constants.PRODUCT_NAME_SELECTOR)
         price = product.find_element(By.CSS_SELECTOR, constants.PRODUCT_PRICE_SELECTOR)
         key = product.get_attribute(constants.ID_ATTRIBUTE) or ""
-        return Upgrade(key=key, name=name.text.strip(), price=parse_amount(price.text))
+        return Upgrade(
+            key=key,
+            name=name.text.strip(),
+            price=parse_amount(price.text),
+            cookies_per_second=SeleniumGame._production_of(key, production),
+        )
+
+    @staticmethod
+    def _production_of(key: str, production: Sequence[float]) -> float | None:
+        """@brief Look up the production of the product with this element id."""
+        index = key.removeprefix(constants.PRODUCT_ID_PREFIX)
+        if not index.isdigit() or int(index) >= len(production):
+            return None
+        value = production[int(index)]
+        return float(value) if isinstance(value, int | float) else None
 
     def _visible(self, element_id: str) -> ElementLike | None:
         """@brief Return the element with this id when it exists and is displayed."""

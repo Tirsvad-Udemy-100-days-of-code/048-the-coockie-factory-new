@@ -12,3 +12,5 @@ class BuyStrategy(Enum):
     BUY_ONE = "buy-one"
     ## Buy every upgrade the cookies pay for, most expensive first.
     BUY_ALL = "buy-all"
+    ## Buy the affordable upgrade with the lowest price per cookie per second.
+    BEST_VALUE = "best-value"

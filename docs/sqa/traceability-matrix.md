@@ -9,7 +9,8 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: baseline artifacts | [cadc5ef] |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add MIL-008 and RC-019 | [9a6796f] |
+| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add RC-020, the code review of MIL-008 | [2f1c7ff] |
 
 ---
 
@@ -29,7 +30,7 @@ Tracks backward and forward links between artifact instances so that the Busines
 | --- | --- | --- | --- | --- | --- | --- |
 | [BC-001] | Business Case | en | it | - | [SA-001], [PP-001] | RC-001 |
 | [SA-001] | Stakeholder Analysis | en | it | [BC-001] | [PP-001] | RC-002 |
-| [PP-001] | Project Plan | en | it | [BC-001], [SA-001] | [MIL-001] to [MIL-007] | - (accepted by S01 in chat; no checklist) |
+| [PP-001] | Project Plan | en | it | [BC-001], [SA-001] | [MIL-001] to [MIL-008] | - (accepted by S01 in chat; no checklist) |
 | [DICT-001] | Domain Dictionary | en | it | [BC-001], [SA-001] | - | RC-003 |
 | [ADR-0001] | ADR | - | - | [BC-001] | [PP-001] | RC-004 |
 | [ADR-0002] | ADR | - | - | [BC-001], [SA-001] | code in MIL-002 onward | RC-005 |
@@ -40,12 +41,14 @@ Tracks backward and forward links between artifact instances so that the Busines
 | [MIL-004] | Milestone | en | it | [BC-001], [PP-001] | [MIL-005] | RC-010 |
 | [MIL-005] | Milestone | en | it | [BC-001], [PP-001] | [MIL-006] | RC-011 |
 | [MIL-006] | Milestone | en | it | [BC-001], [PP-001] | [MIL-007] | RC-012 |
-| [MIL-007] | Milestone | en | it | [BC-001], [PP-001] | - | RC-013 |
+| [MIL-007] | Milestone | en | it | [BC-001], [PP-001] | [MIL-008] | RC-013 |
+| [MIL-008] | Milestone | en | it | [BC-001], [PP-001] | - | RC-019 |
 | Source and tests of [MIL-002] | Python source code | - | - | [MIL-002], [ADR-0002] | - | RC-014 |
 | Source and tests of [MIL-003] | Python source code | - | - | [MIL-003], [ADR-0002] | - | RC-015 |
 | Source and tests of [MIL-004] | Python source code | - | - | [MIL-004], [ADR-0002] | - | RC-016 |
 | Source and tests of [MIL-005] | Python source code | - | - | [MIL-005], [ADR-0002] | - | RC-017 |
 | Source and tests of [MIL-006] | Python source code | - | - | [MIL-006], [ADR-0002] | - | RC-018 |
+| Source and tests of [MIL-008] | Python source code | - | - | [MIL-008], [ADR-0002] | - | RC-020 |
 
 ## Concern Coverage
 
@@ -53,7 +56,7 @@ Tracks backward and forward links between artifact instances so that the Busines
 | --- | --- | --- | --- | --- |
 | CN-001 | [BC-001], [MIL-003], [MIL-004], [MIL-005] | [ADR-0002] | Unit tests per gateway | Covered |
 | CN-002 | [PP-001], [MIL-001] | [ADR-0001] | Review records | Covered |
-| CN-003 | [MIL-006] | - | Unit tests per gateway | Covered |
+| CN-003 | [MIL-006], [MIL-008] | - | Unit tests per gateway | Covered |
 | CN-004 | [MIL-002], [MIL-003] | [ADR-0002] | Code review | Covered |
 | CN-005 | [MIL-002], [MIL-007] | - | Clean clone walk-through | Covered |
 | CN-006 | [MIL-007] | - | Wiki check | Covered |
@@ -89,4 +92,7 @@ Tracks backward and forward links between artifact instances so that the Busines
 [MIL-005]: ../milestones/mil-005-timed-run.md
 [MIL-006]: ../milestones/mil-006-strategy.md
 [MIL-007]: ../milestones/mil-007-documentation.md
+[MIL-008]: ../milestones/mil-008-smarter-rule.md
 [cadc5ef]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/cadc5eff21d9afc09799d4bc2e3f6ac17ab2612a
+[9a6796f]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/9a6796f775680effe37a54f2609c3915140c8c0e
+[2f1c7ff]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/2f1c7ff00a80bdcfa4ed4ff087227a3e4d4d591c

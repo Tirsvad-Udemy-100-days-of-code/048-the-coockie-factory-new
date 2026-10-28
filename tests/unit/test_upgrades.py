@@ -5,6 +5,7 @@
 from cookie_clicker_bot.domain.upgrades import (
     Upgrade,
     choose_affordable_upgrades,
+    choose_best_value,
     choose_most_expensive_affordable,
 )
 
@@ -68,3 +69,46 @@ def test_plan_does_not_change_the_given_list() -> None:
     choose_affordable_upgrades(upgrades, 1000)
 
     assert upgrades == [CURSOR, GRANDMA]
+
+
+VALUE_CURSOR = Upgrade("product0", "Cursor", 15, 0.1)
+VALUE_GRANDMA = Upgrade("product1", "Grandma", 100, 1.0)
+VALUE_FARM = Upgrade("product2", "Farm", 1100, 8.0)
+
+
+def test_best_value_picks_the_lowest_price_per_cookie_per_second() -> None:
+    upgrades = [VALUE_CURSOR, VALUE_GRANDMA, VALUE_FARM]
+
+    assert choose_best_value(upgrades, 2000) == VALUE_GRANDMA
+
+
+def test_best_value_ignores_what_the_cookies_cannot_pay() -> None:
+    upgrades = [VALUE_CURSOR, VALUE_GRANDMA, VALUE_FARM]
+
+    assert choose_best_value(upgrades, 50) == VALUE_CURSOR
+
+
+def test_best_value_returns_none_when_nothing_is_affordable() -> None:
+    assert choose_best_value([VALUE_CURSOR, VALUE_GRANDMA], 10) is None
+
+
+def test_best_value_returns_none_without_upgrades() -> None:
+    assert choose_best_value([], 1000) is None
+
+
+def test_best_value_takes_the_first_on_a_tie() -> None:
+    twin = Upgrade("product9", "Twin", 100, 1.0)
+
+    assert choose_best_value([VALUE_GRANDMA, twin], 500) == VALUE_GRANDMA
+
+
+def test_best_value_skips_an_upgrade_with_zero_production() -> None:
+    idle = Upgrade("product9", "Idle", 10, 0.0)
+
+    assert choose_best_value([idle, VALUE_GRANDMA], 500) == VALUE_GRANDMA
+
+
+def test_best_value_falls_back_to_the_most_expensive_when_production_is_unknown() -> (
+    None
+):
+    assert choose_best_value([CURSOR, GRANDMA, FARM], 1200) == FARM

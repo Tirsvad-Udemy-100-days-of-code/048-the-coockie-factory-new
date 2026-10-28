@@ -31,13 +31,13 @@ This plan schedules seven gateways (`MIL-001` to `MIL-007`) that take the Cookie
 
 | Gateway | Document | Window | Decision date | Owner | Stories | Main deliverable | Milestone |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Baseline and repository set-up | [MIL-001] | 2026-10-28 | 2026-10-28 | S01 | none (documents) | Accepted baseline, ADRs, repository description and topics | |
-| Project scaffold and tooling | [MIL-002] | 2026-10-28 to 2026-10-29 | 2026-10-29 | S01 | none (technical tasks) | `pyproject.toml`, layout, `.gitignore`, Doxyfile, README, Docker image | |
-| Lecture steps 1 and 2 | [MIL-003] | 2026-10-29 to 2026-10-30 | 2026-10-30 | S01 | none (technical tasks) | Open game, dismiss language, click cookie, screenshots 1 and 2 | |
-| Lecture step 3 | [MIL-004] | 2026-10-30 to 2026-10-31 | 2026-10-31 | S01 | none (technical tasks) | Parsing, selection rule, purchase every 5 s, screenshot 3 | |
-| Lecture step 4 | [MIL-005] | 2026-10-31 to 2026-11-01 | 2026-11-01 | S01 | none (technical tasks) | 5 minute run, cookies per second, screenshot 4 | |
-| Lecture step 5 | [MIL-006] | 2026-11-01 to 2026-11-02 | 2026-11-02 | S01 | none (technical tasks) | Strategy options, comparison, screenshot 5 | |
-| Documentation, wiki and release | [MIL-007] | 2026-11-02 to 2026-11-04 | 2026-11-04 | S01 | none (documentation) | README, Doxygen, wiki in en, da and ms, final checks | |
+| Baseline and repository set-up | [MIL-001] | 2026-10-28 | 2026-10-28 | S01 | none (documents) | Accepted baseline, ADRs, repository description and topics | [Milestone 1] |
+| Project scaffold and tooling | [MIL-002] | 2026-10-28 to 2026-10-29 | 2026-10-29 | S01 | none (technical tasks) | `pyproject.toml`, layout, `.gitignore`, Doxyfile, README, Docker image | [Milestone 2] |
+| Lecture steps 1 and 2 | [MIL-003] | 2026-10-29 to 2026-10-30 | 2026-10-30 | S01 | none (technical tasks) | Open game, dismiss language, click cookie, screenshots 1 and 2 | [Milestone 3] |
+| Lecture step 3 | [MIL-004] | 2026-10-30 to 2026-10-31 | 2026-10-31 | S01 | none (technical tasks) | Parsing, selection rule, purchase every 5 s, screenshot 3 | [Milestone 4] |
+| Lecture step 4 | [MIL-005] | 2026-10-31 to 2026-11-01 | 2026-11-01 | S01 | none (technical tasks) | 5 minute run, cookies per second, screenshot 4 | [Milestone 5] |
+| Lecture step 5 | [MIL-006] | 2026-11-01 to 2026-11-02 | 2026-11-02 | S01 | none (technical tasks) | Strategy options, comparison, screenshot 5 | [Milestone 6] |
+| Documentation, wiki and release | [MIL-007] | 2026-11-02 to 2026-11-04 | 2026-11-04 | S01 | none (documentation) | README, Doxygen, wiki in en, da and ms, final checks | [Milestone 7] |
 
 ```plantuml
 @startgantt
@@ -90,9 +90,7 @@ A No-Go on a gateway stops all later gateways until it is fixed and re-reviewed.
 
 ## Open Issues
 
-- Target repository: the user names `https://git.tirsystem.com/Tirsvad-Udemy-100_days_of_code`, but `origin` is `Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new`. The plan uses `origin` until S01 states otherwise in chat.
-- The Business Case sets no deadline; the window 2026-10-28 to 2026-11-04 is this plan's own assumption.
-- No QC checklist exists for the Project Plan acceptance beyond `QC-PP-001`; S01's acceptance of the plan in chat accepts the row.
+- Resolved: S01 accepted the plan in chat on 2026-10-28; the target repository is `origin`, as S01 confirmed.
 
 ---
 
@@ -106,3 +104,10 @@ A No-Go on a gateway stops all later gateways until it is fixed and re-reviewed.
 [MIL-006]: ./milestones/mil-006-strategy.md
 [MIL-007]: ./milestones/mil-007-documentation.md
 [cadc5ef]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/cadc5eff21d9afc09799d4bc2e3f6ac17ab2612a
+[Milestone 1]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/290
+[Milestone 2]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/291
+[Milestone 3]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/292
+[Milestone 4]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/293
+[Milestone 5]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/294
+[Milestone 6]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/295
+[Milestone 7]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/296

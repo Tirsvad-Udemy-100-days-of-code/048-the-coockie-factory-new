@@ -11,7 +11,7 @@
 | --- | --- | --- | --- | --- | --- |
 | 2026-10-28 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add RC-020, the code review of MIL-008 | [2f1c7ff] |
 | 2026-10-29 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add MIL-009 and RC-021 | [72faffa] |
-| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added MIL-010 and its review records RC-022 to RC-025; set the domain of BC-001 and PP-001 to education; added the wiki row; reviewed in autonomous mode, not independent | pending |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added MIL-010 and its review records RC-022 to RC-025; set the domain of BC-001 and PP-001 to education; added the wiki row; reviewed in autonomous mode, not independent | [3b831e6] |
 
 ---
 
@@ -110,3 +110,4 @@ Tracks backward and forward links between artifact instances so that the Busines
 [RC-023]: ./reviews/rc-023-project-plan-baseline.md
 [RC-024]: ./reviews/rc-024-milestone-010.md
 [RC-025]: ./reviews/rc-025-wiki.md
+[3b831e6]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/3b831e6ee75cf4c8cd05443f2bed7e30df5b901a

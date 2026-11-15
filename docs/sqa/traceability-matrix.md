@@ -4,13 +4,15 @@
 | Key | Value |
 | --- | --- |
 | ID | TM-001 |
-| CrossReference | [BC-001] |
+| CrossReference | [BC-001], [SA-001], [PP-001], [MIL-010], [RC-026], [RC-027], [RC-028] |
 
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add RC-020, the code review of MIL-008 | [2f1c7ff] |
-| 2026-10-29 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add MIL-009 and RC-021 | [72faffa] |
+| 2026-10-28 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add RC-020, the code review of MIL-008 | [2f1c7ff] |
+| 2026-10-29 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S02 | Add MIL-009 and RC-021 | [72faffa] |
+| 2026-11-16 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added MIL-010 and its review records RC-022 to RC-025; set the domain of BC-001 and PP-001 to education; added the wiki row; reviewed in autonomous mode, not independent | [3b831e6] |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added the re-review records RC-026 to RC-028 of BC-001, PP-001 and MIL-010 for task 6; reviewed in autonomous mode, not independent | [163d917] |
 
 ---
 
@@ -28,9 +30,9 @@ Tracks backward and forward links between artifact instances so that the Busines
 
 | Artifact Instance | Type | Language | Domain | Upstream (Backward Link) | Downstream (Forward Link) | Last Reviewed (RC-ID) |
 | --- | --- | --- | --- | --- | --- | --- |
-| [BC-001] | Business Case | en | it | - | [SA-001], [PP-001] | RC-001 |
+| [BC-001] | Business Case | en | education | - | [SA-001], [PP-001], [MIL-010] | [RC-026] (Go, re-review after task 6), [RC-022], RC-001 |
 | [SA-001] | Stakeholder Analysis | en | it | [BC-001] | [PP-001] | RC-002 |
-| [PP-001] | Project Plan | en | it | [BC-001], [SA-001] | [MIL-001] to [MIL-009] | - (accepted by S01 in chat; no checklist) |
+| [PP-001] | Project Plan | en | education | [BC-001], [SA-001] | [MIL-001] to [MIL-010] | [RC-027] (Go, re-review after task 6), [RC-023] (earlier versions accepted by S01 in chat; no checklist) |
 | [DICT-001] | Domain Dictionary | en | it | [BC-001], [SA-001] | - | RC-003 |
 | [ADR-0001] | ADR | - | - | [BC-001] | [PP-001] | RC-004 |
 | [ADR-0002] | ADR | - | - | [BC-001], [SA-001] | code in MIL-002 onward | RC-005 |
@@ -43,7 +45,9 @@ Tracks backward and forward links between artifact instances so that the Busines
 | [MIL-006] | Milestone | en | it | [BC-001], [PP-001] | [MIL-007] | RC-012 |
 | [MIL-007] | Milestone | en | it | [BC-001], [PP-001] | [MIL-008] | RC-013 |
 | [MIL-008] | Milestone | en | it | [BC-001], [PP-001] | [MIL-009] | RC-019 |
-| [MIL-009] | Milestone | en | it | [BC-001], [PP-001] | - | RC-021 |
+| [MIL-009] | Milestone | en | it | [BC-001], [PP-001] | [MIL-010] | RC-021 |
+| [MIL-010] | Milestone | en | education | [BC-001], [PP-001], [MIL-009] | - | [RC-028] (Go, re-review after task 6), [RC-024] |
+| Wiki | Wiki | en, da, ms | education | [BC-001], [MIL-010] | - | [RC-025] |
 | Source and tests of [MIL-002] | Python source code | - | - | [MIL-002], [ADR-0002] | - | RC-014 |
 | Source and tests of [MIL-003] | Python source code | - | - | [MIL-003], [ADR-0002] | - | RC-015 |
 | Source and tests of [MIL-004] | Python source code | - | - | [MIL-004], [ADR-0002] | - | RC-016 |
@@ -76,6 +80,9 @@ Tracks backward and forward links between artifact instances so that the Busines
 - No test plan (`TP`), architecture description (`AD`) or design artifacts exist: ADR-0001 skips stories and use cases, and the code is small. Quality checks in Concern Coverage name the check used instead.
 - `-` in Upstream means foundational, in Downstream that nothing is built on it yet, and in Last Reviewed that no `RC-*` exists.
 - Every concern is covered once MIL-007 is merged; the quality check column names the check that was run.
+- The wiki (`docs/wiki/`) is documentation, not an artifact with an ID or a Language and Domain row; it has its own review record, [RC-025].
+- The domain of [BC-001], [PP-001], [MIL-010] and the wiki is `education` since [MIL-010]. The other documents keep the domain `it` they were accepted with; a change of their domain would need a new review of each (see the Open Issues of [PP-001]). The ADRs have no Language and Domain rows.
+- [MIL-010] changes no source or test file; its task 6 changes `Dockerfile` only (a user without root rights), checked by the OpenGrep scan.
 
 ---
 
@@ -99,3 +106,13 @@ Tracks backward and forward links between artifact instances so that the Busines
 [9a6796f]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/9a6796f775680effe37a54f2609c3915140c8c0e
 [2f1c7ff]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/2f1c7ff00a80bdcfa4ed4ff087227a3e4d4d591c
 [72faffa]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/72faffaff9e46bb294c7d55555a179af8d842443
+[MIL-010]: ../milestones/mil-010-framework-baseline.md
+[RC-022]: ./reviews/rc-022-business-case-baseline.md
+[RC-023]: ./reviews/rc-023-project-plan-baseline.md
+[RC-024]: ./reviews/rc-024-milestone-010.md
+[RC-025]: ./reviews/rc-025-wiki.md
+[3b831e6]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/3b831e6ee75cf4c8cd05443f2bed7e30df5b901a
+[RC-026]: ./reviews/rc-026-business-case-task-6.md
+[RC-027]: ./reviews/rc-027-project-plan-task-6.md
+[RC-028]: ./reviews/rc-028-milestone-010-task-6.md
+[163d917]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/163d917022cb81e37bca5772b8680e3c606f689c

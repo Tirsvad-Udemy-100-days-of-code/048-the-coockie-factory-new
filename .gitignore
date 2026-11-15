@@ -1,5 +1,7 @@
-# Secrets and personal files
+# Secrets and personal files (the template .env.example is kept)
 .env
+.env.*
+!.env.example
 
 # AI prompt log (the repository is public)
 /docs/ai-prompts/

@@ -11,17 +11,18 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Initial version; accepted with the Go verdict of the review record (autonomous, not independent) | [3b831e6] |
+| 2026-11-16 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S01 | Initial version; accepted with the Go verdict of the review record (autonomous, not independent) | [3b831e6] |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added task 6 and criterion 9 (the container of `Dockerfile` runs as a user without root rights, so the OpenGrep scan passes without a suppression); reviewed in autonomous mode, not independent | pending |
 
 ---
 
 ## Purpose
 
-This gate decides whether Cookie Clicker Bot has the baseline of the framework: the adopted framework release, the wiki in English, Danish and Bahasa Malaysia with a sidebar in the framework's shape (title, one list of the English pages, the Languages section last), the README in the framework template with an appendix that lists only the documents of the repository, complete licence and project URL metadata, a passing test suite, an up to date traceability matrix and reviewed documents, merged to the default branch with a green build. The work is delivered on the branch `mil-010-framework-baseline` and one pull request. It changes no behaviour of the program.
+This gate decides whether Cookie Clicker Bot has the baseline of the framework: the adopted framework release, the wiki in English, Danish and Bahasa Malaysia with a sidebar in the framework's shape (title, one list of the English pages, the Languages section last), the README in the framework template with an appendix that lists only the documents of the repository, complete licence and project URL metadata, a passing test suite, an up to date traceability matrix and reviewed documents, merged to the default branch with a green build. One behaviour-neutral change of the container set-up is part of it, so that the OpenGrep scan of the pull request passes without a suppression. The work is delivered on the branch `mil-010-framework-baseline` and one pull request. It changes no behaviour of the program.
 
 ## Deliverable
 
-A merged pull request that holds: the updated Business Case, Project Plan, Artifact Registry and Traceability Matrix, this milestone and their review records; the wiki sidebar in `docs/wiki/` and the review record of the wiki; the README without the private framework files in its appendix; `pyproject.toml` with the licence expression, the author, the project URLs and a build requirement that reads the licence expression; `.editorconfig` and `.env.example` of the framework baseline (the settings of the program are kept in it as comments); and the framework release adopted by the project. The program (`src/`) and the tests (`tests/`) do not change.
+A merged pull request that holds: the updated Business Case, Project Plan, Artifact Registry and Traceability Matrix, this milestone and their review records; the wiki sidebar in `docs/wiki/` and the review record of the wiki; the README without the private framework files in its appendix; `pyproject.toml` with the licence expression, the author, the project URLs and a build requirement that reads the licence expression; `.editorconfig` and `.env.example` of the framework baseline (the settings of the program are kept in it as comments); and the framework release adopted by the project. The program (`src/`) and the tests (`tests/`) do not change; `Dockerfile` gets a user without root rights.
 
 ## Go / No-Go Criteria
 
@@ -35,6 +36,7 @@ A merged pull request that holds: the updated Business Case, Project Plan, Artif
 | 6 | `.env.example` is tracked and holds empty placeholders for the framework tokens and, as comments, the settings of the program (`CHROME_BIN`, `CHROMEDRIVER_PATH`); `.env` is not tracked | Present, no real value | Missing, a real value present or `.env` tracked |
 | 7 | All CI checks of the pull request | Green | Red or pending |
 | 8 | The pull request carries one `Closes #N` line per task of this milestone | Every issue is closed after the merge | An issue stays open |
+| 9 | `Dockerfile` sets a `USER` that is not `root` before its `ENTRYPOINT`, and the OpenGrep check of the pull request passes without a suppression | Both | Either fails |
 
 ## Dependencies
 
@@ -47,8 +49,8 @@ A merged pull request that holds: the updated Business Case, Project Plan, Artif
 | Business Case objective / KPI / user story | Reference |
 | --- | --- |
 | Objectives O1 to O6 | Criterion 2 (the behaviour is unchanged and its tests pass) |
-| Objective O7 | Criteria 1, 3, 4, 5, 6 and 8 (documents, wiki, README, licence, environment template and issues) |
-| Success criterion 9 | Criteria 1, 2, 3, 4 and 7 |
+| Objective O7 | Criteria 1, 3, 4, 5, 6, 8 and 9 (documents, wiki, README, licence, environment template, issues and container user) |
+| Success criterion 9 | Criteria 1, 2, 3, 4, 7 and 9 |
 
 ## Ownership
 
@@ -70,6 +72,7 @@ A merged pull request that holds: the updated Business Case, Project Plan, Artif
 | 3 | Bring the wiki sidebar to the framework's shape | Name the last sidebar section Languages with one line per language that links to its Home page, check the sidebar, the page sets and the flat folder against the wiki checklist, and add a review record for the wiki. | No | BC-001 objectives O6 and O7 |
 | 4 | Bring the README to the framework template | Keep the text of the README, describe the framework files in the repository layout, name the licence expression, add a note on the live page and give the appendix only the documents that are in the repository, so the README is complete and checkable. | No | BC-001 objectives O5 and O7 |
 | 5 | Complete the package metadata | Replace the licence file reference in `pyproject.toml` by the licence expression, add `license-files`, the author and the repository, documentation and issue tracker URLs, and raise the build requirement to the setuptools version that reads a licence expression, so package tools can read them. | No | BC-001 objectives O5 and O7 |
+| 6 | Run the container as a user without root rights | Add a user with the id 1000 that owns `/app`, and a `USER` line before the `ENTRYPOINT` in `Dockerfile`, so that the OpenGrep rule `missing-user` no longer matches. The scan is not suppressed. The program, its options and the paths of the screenshots are unchanged. The image is not built or run in this milestone (that needs Docker and a browser). | No | BC-001 objective O7 |
 
 ---
 

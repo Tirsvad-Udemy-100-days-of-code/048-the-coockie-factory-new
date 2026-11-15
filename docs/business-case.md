@@ -12,7 +12,8 @@
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
 | 2026-10-28 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: Cookie Clicker bot (Udemy day 48) | [cadc5ef] |
-| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added objective O7, success criterion 9, a scope item, an out-of-scope item, a risk and constraints for the baseline milestone MIL-010; set the domain to education; reviewed in autonomous mode, not independent | [3b831e6] |
+| 2026-11-16 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added objective O7, success criterion 9, a scope item, an out-of-scope item, a risk and constraints for the baseline milestone MIL-010; set the domain to education; reviewed in autonomous mode, not independent | [3b831e6] |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Scope wording: the baseline milestone MIL-010 includes one behaviour-neutral change of `Dockerfile` (a user without root rights) so the OpenGrep scan passes; reviewed in autonomous mode, not independent | pending |
 
 ---
 
@@ -56,7 +57,7 @@ A documented and tested solution that runs from a README gives participants a re
 - One screenshot per lecture step, taken from a headless browser in a Docker container and used in the README and the wiki.
 - Wiki in en, da and ms, published to the git host.
 - Repository description and topics on `git.tirsystem.com`.
-- The baseline milestone [MIL-010]: the framework release, the wiki sidebar in the framework's shape (one English page list and a Languages section), the README without the private framework files in its appendix, licence and project URL metadata, `.editorconfig`, `.env.example`, review records and an updated traceability matrix. It changes no behaviour of the program.
+- The baseline milestone [MIL-010]: the framework release, the wiki sidebar in the framework's shape (one English page list and a Languages section), the README without the private framework files in its appendix, licence and project URL metadata, `.editorconfig`, `.env.example`, review records and an updated traceability matrix. It changes no behaviour of the program; its only other change is the user set-up in `Dockerfile` (a user without root rights, task 6) so the OpenGrep scan passes.
 
 ### Out of Scope
 
@@ -65,7 +66,7 @@ A documented and tested solution that runs from a README gives participants a re
 - A graphical user interface or a web API.
 - Distribution as a package on PyPI.
 - Running GUI tests on the host desktop (framework rule: container or sandbox only).
-- Any change to `src/` or `tests/` in the baseline milestone [MIL-010]. That milestone starts no browser, opens no web page and runs no container; the tests use fakes.
+- Any change to `src/` or `tests/` in the baseline milestone [MIL-010]; its only change of a runtime file is the user set-up in `Dockerfile` (task 6). That milestone starts no browser, opens no web page and runs no container; the tests use fakes.
 
 ## Expected Benefits
 

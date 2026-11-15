@@ -13,7 +13,8 @@
 | --- | --- | --- | --- | --- | --- |
 | 2026-10-28 | Deprecated | Jens Tirsvad Nielsen | S01 | Add MIL-008 (smarter purchase rule); accepted by S01 in chat | [9a6796f] |
 | 2026-10-29 | Deprecated | Jens Tirsvad Nielsen | S01 | Add MIL-009 (Home pages show the best value result); accepted by S01 in chat | [72faffa] |
-| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added the baseline gateway MIL-010 with its schedule row, scope coverage, dependency, risk and Gantt entries; recorded the move of the end date, the domain, the live-site rule and the stale wiki-publish remark in the Planning Assumptions and Open Issues; set the domain to education; reviewed in autonomous mode, not independent | [3b831e6] |
+| 2026-11-16 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added the baseline gateway MIL-010 with its schedule row, scope coverage, dependency, risk and Gantt entries; recorded the move of the end date, the domain, the live-site rule and the stale wiki-publish remark in the Planning Assumptions and Open Issues; set the domain to education; reviewed in autonomous mode, not independent | [3b831e6] |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added the user set-up of `Dockerfile` to the main deliverable of MIL-010; reviewed in autonomous mode, not independent | pending |
 
 ---
 
@@ -44,7 +45,7 @@ This plan schedules ten gateways (`MIL-001` to `MIL-010`) that take the Cookie C
 | Documentation, wiki and release | [MIL-007] | 2026-11-02 to 2026-11-04 | 2026-11-04 | S01 | none (documentation) | README, Doxygen, wiki in en, da and ms, final checks | [Milestone 7] |
 | Smarter purchase rule | [MIL-008] | 2026-11-05 to 2026-11-06 | 2026-11-06 | S01 | none (technical tasks) | Best value strategy, measured comparison, wiki note in en, da and ms | [Milestone 8] |
 | Home pages show the best value result | [MIL-009] | 2026-10-29 to 2026-10-30 | 2026-10-30 | S01 | none (documentation) | Results row and --best-value note on the wiki Home pages in en, da and ms | [Milestone 9] |
-| Framework baseline | [MIL-010] | 2026-11-16 to 2026-11-23 | 2026-11-23 | S01 | none (technical tasks) | Branch `mil-010-framework-baseline` merged: the adopted framework release, the wiki sidebar in the framework's shape, the README, licence and project URL metadata, the traceability matrix and review records | [Milestone 567] |
+| Framework baseline | [MIL-010] | 2026-11-16 to 2026-11-23 | 2026-11-23 | S01 | none (technical tasks) | Branch `mil-010-framework-baseline` merged: the adopted framework release, the wiki sidebar in the framework's shape, the README, licence and project URL metadata, the traceability matrix, review records and a container user without root rights | [Milestone 567] |
 
 ```plantuml
 @startgantt

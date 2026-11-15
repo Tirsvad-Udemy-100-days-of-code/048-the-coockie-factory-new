@@ -119,6 +119,8 @@ docker run --rm cookie-clicker-bot
 docker run --rm cookie-clicker-bot --headless --interval 10
 ```
 
+The container runs as a user with the id 1000, who owns `/app`. A folder that you mount for screenshots must be writable by that id on Linux.
+
 ## 🧪 Tests
 
 ```bash

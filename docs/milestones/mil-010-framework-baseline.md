@@ -12,7 +12,7 @@
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
 | 2026-11-16 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S01 | Initial version; accepted with the Go verdict of the review record (autonomous, not independent) | [3b831e6] |
-| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added task 6 and criterion 9 (the container of `Dockerfile` runs as a user without root rights, so the OpenGrep scan passes without a suppression); reviewed in autonomous mode, not independent | pending |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added task 6 and criterion 9 (the container of `Dockerfile` runs as a user without root rights, so the OpenGrep scan passes without a suppression); reviewed in autonomous mode, not independent | [163d917] |
 
 ---
 
@@ -80,3 +80,4 @@ A merged pull request that holds: the updated Business Case, Project Plan, Artif
 [PP-001]: ../project-plan.md
 [MIL-009]: ./mil-009-home-results.md
 [3b831e6]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/3b831e6ee75cf4c8cd05443f2bed7e30df5b901a
+[163d917]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/163d917022cb81e37bca5772b8680e3c606f689c

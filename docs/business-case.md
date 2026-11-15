@@ -13,7 +13,7 @@
 | --- | --- | --- | --- | --- | --- |
 | 2026-10-28 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: Cookie Clicker bot (Udemy day 48) | [cadc5ef] |
 | 2026-11-16 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added objective O7, success criterion 9, a scope item, an out-of-scope item, a risk and constraints for the baseline milestone MIL-010; set the domain to education; reviewed in autonomous mode, not independent | [3b831e6] |
-| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Scope wording: the baseline milestone MIL-010 includes one behaviour-neutral change of `Dockerfile` (a user without root rights) so the OpenGrep scan passes; reviewed in autonomous mode, not independent | pending |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Scope wording: the baseline milestone MIL-010 includes one behaviour-neutral change of `Dockerfile` (a user without root rights) so the OpenGrep scan passes; reviewed in autonomous mode, not independent | [163d917] |
 
 ---
 
@@ -162,3 +162,4 @@ Proceed: the scope is small, the risks have mitigations, and the narrowest first
 [PP-001]: ./project-plan.md
 [MIL-010]: ./milestones/mil-010-framework-baseline.md
 [3b831e6]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/3b831e6ee75cf4c8cd05443f2bed7e30df5b901a
+[163d917]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/163d917022cb81e37bca5772b8680e3c606f689c

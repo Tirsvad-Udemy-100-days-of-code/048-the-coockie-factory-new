@@ -14,7 +14,7 @@
 | 2026-10-28 | Deprecated | Jens Tirsvad Nielsen | S01 | Add MIL-008 (smarter purchase rule); accepted by S01 in chat | [9a6796f] |
 | 2026-10-29 | Deprecated | Jens Tirsvad Nielsen | S01 | Add MIL-009 (Home pages show the best value result); accepted by S01 in chat | [72faffa] |
 | 2026-11-16 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added the baseline gateway MIL-010 with its schedule row, scope coverage, dependency, risk and Gantt entries; recorded the move of the end date, the domain, the live-site rule and the stale wiki-publish remark in the Planning Assumptions and Open Issues; set the domain to education; reviewed in autonomous mode, not independent | [3b831e6] |
-| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added the user set-up of `Dockerfile` to the main deliverable of MIL-010; reviewed in autonomous mode, not independent | pending |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added the user set-up of `Dockerfile` to the main deliverable of MIL-010; reviewed in autonomous mode, not independent | [163d917] |
 
 ---
 
@@ -135,3 +135,4 @@ A No-Go on a gateway stops all later gateways until it is fixed and re-reviewed.
 [MIL-010]: ./milestones/mil-010-framework-baseline.md
 [Milestone 567]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/milestone/567
 [3b831e6]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/3b831e6ee75cf4c8cd05443f2bed7e30df5b901a
+[163d917]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/163d917022cb81e37bca5772b8680e3c606f689c

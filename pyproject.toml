@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=75"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "Selenium bot that plays Cookie Clicker (Udemy 100 Days of Code, day 48)."
 readme = "README.md"
 requires-python = ">=3.13"
-license = { file = "LICENSE" }
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "Jens Tirsvad Nielsen" }]
 dependencies = [
     "selenium>=4.25",
 ]
@@ -23,6 +25,11 @@ dev = [
 
 [project.scripts]
 cookie-clicker-bot = "cookie_clicker_bot.cli:main"
+
+[project.urls]
+Repository = "https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new"
+Documentation = "https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/wiki"
+"Issue tracker" = "https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

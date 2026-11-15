@@ -4,14 +4,15 @@
 | Key | Value |
 | --- | --- |
 | ID | BC-001 |
-| CrossReference | [SA-001] |
+| CrossReference | [SA-001], [PP-001], [MIL-010] |
 | Language | en |
-| Domain | it |
+| Domain | education |
 
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-10-28 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: Cookie Clicker bot (Udemy day 48) | [cadc5ef] |
+| 2026-10-28 | Deprecated | Jens Tirsvad Nielsen | AI as stand-in for S02 | Initial version: Cookie Clicker bot (Udemy day 48) | [cadc5ef] |
+| 2026-11-16 | Accepted | Jens Tirsvad Nielsen | AI as stand-in for S01 | Added objective O7, success criterion 9, a scope item, an out-of-scope item, a risk and constraints for the baseline milestone MIL-010; set the domain to education; reviewed in autonomous mode, not independent | pending |
 
 ---
 
@@ -42,6 +43,7 @@ A documented and tested solution that runs from a README gives participants a re
 4. O4: Offer a tweakable strategy (check interval, buy one or buy all affordable) so the participant can try to beat the first result (lecture step 5).
 5. O5: Provide the repository hygiene for S02 and S03: README from the framework template, run and test instructions, `.venv` instructions, Doxygen configuration, repository description and topics.
 6. O6: Provide wiki pages in English, Danish and Bahasa Malaysia that explain what each lecture step teaches, each with a screenshot.
+7. O7: Bring the finished project to the common baseline of the framework: the adopted framework release, a wiki sidebar that follows the framework's rules, licence and project URL metadata, a README that lists only the documents of the repository and an `.env.example` that also names the settings of the program ([MIL-010]).
 
 ## Scope
 
@@ -54,6 +56,7 @@ A documented and tested solution that runs from a README gives participants a re
 - One screenshot per lecture step, taken from a headless browser in a Docker container and used in the README and the wiki.
 - Wiki in en, da and ms, published to the git host.
 - Repository description and topics on `git.tirsystem.com`.
+- The baseline milestone [MIL-010]: the framework release, the wiki sidebar in the framework's shape (one English page list and a Languages section), the README without the private framework files in its appendix, licence and project URL metadata, `.editorconfig`, `.env.example`, review records and an updated traceability matrix. It changes no behaviour of the program.
 
 ### Out of Scope
 
@@ -62,6 +65,7 @@ A documented and tested solution that runs from a README gives participants a re
 - A graphical user interface or a web API.
 - Distribution as a package on PyPI.
 - Running GUI tests on the host desktop (framework rule: container or sandbox only).
+- Any change to `src/` or `tests/` in the baseline milestone [MIL-010]. That milestone starts no browser, opens no web page and runs no container; the tests use fakes.
 
 ## Expected Benefits
 
@@ -92,6 +96,7 @@ The project is a learning exercise inside the 100 Days of Code bootcamp. It supp
 | 6 | Documentation is complete | Screenshots for 5 of 5 lecture steps in README and in the 3 wiki languages | Count of images per page |
 | 7 | Repository metadata is set | Description and at least 5 topics present | Repository API response |
 | 8 | No runtime dependency beyond Selenium | `pyproject.toml` lists Selenium as the only runtime dependency | `pyproject.toml` |
+| 9 | The baseline milestone is done (objective O7) | The wiki sidebar has the framework's shape and a review record, `framework/scripts/check-readme.sh`, `check-languages.sh` and `check-editorconfig.sh` exit with code 0, `python -m pytest` passes, 100 % of the continuous integration (CI) checks of the pull request of [MIL-010] pass | Files in `docs/`, the script exit codes and the pull request status on the git host |
 
 ## Risks
 
@@ -103,6 +108,7 @@ The project is a learning exercise inside the 100 Days of Code bootcamp. It supp
 | The token for the git host is exposed | Account misuse | Tokens are read from the personal `.env` outside the repository; never imported, tested or committed |
 | Autonomous mode review is not independent | A defect passes review | Stand-in decisions are marked in each `RC-*` and open to challenge in the final summary by S01 |
 | Translations contain errors | Misleading wiki pages | English is authoritative; da and ms follow it page by page and S01 can correct them |
+| The documents of the baseline milestone [MIL-010] change documents that were accepted earlier, and the AI stand-in for S01 reviews them | A defect is missed because the review is not independent | Every review record of the baseline says `Mode: autonomous, not independent`, `src/` and `tests/` are not changed, the tests run before and after, and the end-of-run summary lists the reviews for challenge |
 
 ## Assumptions
 
@@ -121,7 +127,8 @@ The project is a learning exercise inside the 100 Days of Code bootcamp. It supp
 - Doxygen comments in source and a Doxyfile.
 - The wiki exists in English, Danish and Bahasa Malaysia.
 - Each pull request is a branch that tracks one step; the framework cannot be edited from this project.
-- The PO language is English, the domain is IT.
+- The baseline milestone [MIL-010] starts 2026-11-16 and is finished within one week, by 2026-11-23. For that milestone only, an AI stand-in for S01 reviews and accepts the changed documents.
+- The Product Owner (PO) language is English and the PO domain is education (it was IT until [MIL-010]; the documents that [MIL-010] does not change keep the domain `it`, see the Open Issues of [PP-001]).
 - Credentials come from a personal `.env`, which is not part of the project.
 - The Business Case sets no deadline; the Project Plan assumes 2026-10-28 to 2026-11-04.
 
@@ -151,3 +158,5 @@ Proceed: the scope is small, the risks have mitigations, and the narrowest first
 
 [SA-001]: ./stakeholder-analysis.md
 [cadc5ef]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/commit/cadc5eff21d9afc09799d4bc2e3f6ac17ab2612a
+[PP-001]: ./project-plan.md
+[MIL-010]: ./milestones/mil-010-framework-baseline.md

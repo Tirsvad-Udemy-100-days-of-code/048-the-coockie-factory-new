@@ -7,8 +7,8 @@
 - [Step 4: Five minute run](Step-4-Five-Minute-Run)
 - [Step 5: Improve the strategy](Step-5-Improve-the-Strategy)
 
-**Language**
+**Languages**
 
-- [English](Home)
-- [Dansk](Home-da)
-- [Bahasa Malaysia](Home-ms)
+- English: [Home](Home)
+- Dansk: [Hjem](Home-da)
+- Bahasa Malaysia: [Utama](Home-ms)

@@ -44,6 +44,10 @@ The repository is organised like this:
 | `docs/` | Project documents, wiki pages (English, Danish, Bahasa Malaysia) and the screenshots of the lecture steps |
 | `Dockerfile` | A Linux image with headless Chromium for real-browser runs and screenshots |
 | `Doxyfile` | Doxygen configuration for the source comments |
+| `pyproject.toml` | Package metadata, the licence expression, and the settings of `pytest`, `ruff` and `mypy` |
+| `framework/` | The SQA and QC framework (a git submodule) that the project documents follow |
+| `.editorconfig` | The editor settings of the framework baseline |
+| `.env.example` | Placeholders for the git host tokens that the framework scripts read, and the optional settings of the program (`CHROME_BIN`, `CHROMEDRIVER_PATH`), which it reads from the process environment and not from a `.env` file |
 
 ## 📋 Requirements
 
@@ -95,7 +99,7 @@ or, without installing the command:
 python -m cookie_clicker_bot
 ```
 
-The bot plays for 5 minutes, then prints one line on standard output, for example `cookies/second: 18.9`. What it did (clicks, purchases, time) is logged on standard error. Options:
+The bot plays for 5 minutes, then prints one line on standard output, for example `cookies/second: 18.9`. What it did (clicks, purchases, time) is logged on standard error. The bot opens the real Cookie Clicker page at ozh.github.io. It plays the game, submits nothing and needs no account. Read the terms of use of a site before you run a program against it. Options:
 
 | Option | What it does | Default |
 | --- | --- | --- |
@@ -131,7 +135,7 @@ doxygen Doxyfile
 
 ## 📄 License
 
-GNU Affero General Public License v3.0, see [LICENSE][license].
+The project is licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later); see the [LICENSE][license] file.
 
 ## 🔗 Links
 
@@ -145,7 +149,6 @@ The documents a newcomer needs, in reading order.
 
 | Document | What it tells you |
 | --- | --- |
-| [AGENTS.md][agents] | The rules AI agents follow in this repository |
 | [Business Case][BC-001] | Why the project exists, its scope and success criteria |
 | [Stakeholder Analysis][SA-001] | Who is involved; the stakeholder IDs used for owners and reviewers |
 | [Project Plan][PP-001] | The gateways and their schedule |
@@ -153,8 +156,6 @@ The documents a newcomer needs, in reading order.
 | [Artifact registry][registry] | Where each artifact type lives, the next version, the PO language and domain |
 | [Domain dictionary][DICT-001] | The PO terms and the IT terms |
 | [Traceability matrix][TM-001] | How the artifacts link and when each was last reviewed |
-| [Framework README][framework-readme] | The framework this project uses |
-| [Framework changelog][framework-changelog] | What changed in each framework release |
 
 ---
 
@@ -163,7 +164,6 @@ The documents a newcomer needs, in reading order.
 [repository]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new
 [documentation]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/wiki
 [issues]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/048-the-coockie-factory-new/issues
-[agents]: ./AGENTS.md
 [BC-001]: ./docs/business-case.md
 [SA-001]: ./docs/stakeholder-analysis.md
 [PP-001]: ./docs/project-plan.md
@@ -171,5 +171,3 @@ The documents a newcomer needs, in reading order.
 [registry]: ./docs/artifact-registry.md
 [DICT-001]: ./docs/dictionary.md
 [TM-001]: ./docs/sqa/traceability-matrix.md
-[framework-readme]: ./framework/README.md
-[framework-changelog]: ./framework/CHANGELOG.md
